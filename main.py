@@ -7,20 +7,22 @@ def menu():
 
     os.system('cls')  # cls en windows, clear en linux
     print("Work modes:")
-    print("\t1 - Read Single DCM image")
-    print("\t2 - Still in development")
+    print("\t1 - Read single DCM image")
+    print("\t2 - Read DCM dataset")
     print("\t3 - Still in development")
     print("\t9 - Exit")
 
 
 while True:
 
-    menu() #Muestra menu
+    menu()
 
     option = input("Select an option >> ")
 
+    obj = readDCM.readIMG()
+
     if option == "1":
-        print("")
+        print("This will show all the info of a DCM image given ")
 
         found = 1
         while (found != 0):
@@ -30,7 +32,6 @@ while True:
             if os.path.isfile(imgPath):
 
                 print('DCM file found')
-                obj = readDCM.readIMG()
                 obj.readDCMimage(imgPath)
                 found = 0
 
@@ -43,8 +44,10 @@ while True:
 
 
     elif option == "2":
-        print("")
-        input("Press any key to continue")
+        print("This will read a DCM dataset")
+        datasetPath=input('Enter dataset path ->')
+        obj.readDCMdataset(datasetPath)
+
     elif option == "3":
         print("")
         input("Press any key to continue")

@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import pydicom
+import os
+from pydicom.data import get_testdata_files
 
 class readIMG:
 
@@ -28,3 +30,16 @@ class readIMG:
 
         plt.imshow(dataset.pixel_array, cmap=plt.cm.bone)
         plt.show()
+#-----------------------------------------------------------------------------------------------------------------------
+    def readDCMdataset(self,DCMPath):
+        lstFilesDCM=[]
+        for dirName,subDirList,fileList in os.walk(DCMPath):
+            for fileName in fileList:
+                lstFilesDCM.append(os.path.join(dirName,fileName))
+
+        lstImagesDCM=[]
+        for files in lstFilesDCM:
+            dataset=pydicom.dcmread(files)
+            lstImagesDCM.append(dataset.pixel_array) #pixel array devuelve un array de numpy
+            #plt.imshow(dataset.pixel_array, cmap=plt.cm.bone)
+            #plt.show()
