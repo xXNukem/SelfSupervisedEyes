@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import pydicom
 import os
-from pydicom.data import get_testdata_files
+from PIL import Image, ImageOps
+import numpy as np
 
 class readIMG:
 
@@ -37,9 +38,23 @@ class readIMG:
             for fileName in fileList:
                 lstFilesDCM.append(os.path.join(dirName,fileName))
 
-        lstImagesDCM=[]
-        for files in lstFilesDCM:
-            dataset=pydicom.dcmread(files)
-            lstImagesDCM.append(dataset.pixel_array) #pixel array devuelve un array de numpy
-            #plt.imshow(dataset.pixel_array, cmap=plt.cm.bone)
-            #plt.show()
+        saveNumber=0
+        if os.path.exists('./converted')==False:
+            os.mkdir('./converted')
+            for files in lstFilesDCM:
+                dataset = pydicom.dcmread(files)
+                Image.fromarray(dataset.pixel_array).save("./converted/img_" + str(saveNumber) + ".jpg")
+                originalIMG = Image.open("./converted/img_" + str(saveNumber) + ".jpg")
+                resizedIMG = originalIMG.resize((240, 240))
+                resizedIMG.save("./converted/img_" + str(saveNumber) + ".jpg")
+                saveNumber = saveNumber + 1
+        else:
+            for files in lstFilesDCM:
+                dataset=pydicom.dcmread(files)
+                Image.fromarray(dataset.pixel_array).save("./converted/img_"+str(saveNumber)+".jpg")
+                originalIMG=Image.open("./converted/img_"+str(saveNumber)+".jpg")
+                resizedIMG=originalIMG.resize((240,240))
+                resizedIMG.save("./converted/img_"+str(saveNumber)+".jpg")
+                saveNumber=saveNumber+1
+
+        print('Dataset transformed to JPG images into ./converted folder')

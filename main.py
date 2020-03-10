@@ -8,7 +8,7 @@ def menu():
     os.system('cls')  # cls en windows, clear en linux
     print("Work modes:")
     print("\t1 - Read single DCM image")
-    print("\t2 - Read DCM dataset")
+    print("\t2 - Transform DCM dataset into JPG images")
     print("\t3 - Still in development")
     print("\t9 - Exit")
 
