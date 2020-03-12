@@ -7,9 +7,9 @@ img=Image.open('./converted/img_0.jpg')
 #240*240
 
 #Obtención recorte central
-randomCenter=random.uniform(1.5,3.5)
-randomXCenter=randomCenter
-randomYCenter=randomCenter
+#randomCenter=random.uniform(1.5,3.5)
+randomXCenter=random.uniform(1.5,3.5)
+randomYCenter=random.uniform(1.5,3.5)
 squareSize=70
 
 xCenter=img.width/randomXCenter
@@ -81,18 +81,18 @@ y2=yCenter+(squareSize/2)
 
 croppingMask=(x1,y1,x2,y2)
 
-rightSquareCropped=img.crop(croppingMask)
+downSquareCropped=img.crop(croppingMask)
 
 #rightSquareCropped.show('img5')
-rightSquareCropped.save('7.jpg')
-"""
+downSquareCropped.save('7.jpg')
 
-#Obtencion del recorte 7 (abajo)
-#Distancia respecto al cuadrado central
-centralSquareDistance=(squareSize/2)+float((random.randrange(9)+1))
+
+#Obtencion del recorte 5 (derecha)
+#Distancia despecto del cuadradito central
+centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2) #Asi se aleja o acerca más del recorte del centro
 #Coordenadas respecto del central
-xCenter=img.width/randomXCenter-centralSquareDistance
-yCenter=img.height/randomXCenter+centralSquareDistance+random.uniform(-5.5,5.5)
+xCenter=img.width/randomXCenter+centralSquareDistance
+yCenter=img.height/randomYCenter+float(random.uniform(-10.5,10.5))
 
 x1=xCenter-(squareSize/2)
 y1=yCenter-(squareSize/2)
@@ -101,8 +101,76 @@ y2=yCenter+(squareSize/2)
 
 croppingMask=(x1,y1,x2,y2)
 
-downSquareCropped=img.crop(croppingMask)
+rightSquareCropped=img.crop(croppingMask)
 
 #downSquareCropped.show('img7')
-downSquareCropped.save('7.jpg')
-"""
+rightSquareCropped.save('5.jpg')
+
+#OBTENCION DE LAS DIAGONALES----------------------------------------------------------------------------------
+
+#Superior izquierda (2)
+#Coordenadas respecto del cuadrado central
+centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2)
+#Coordenadas respecto del central
+xCenter=img.width/randomXCenter-centralSquareDistance+float(random.uniform(-10.5,10.5))
+yCenter=img.height/randomYCenter-centralSquareDistance+float(random.uniform(-10.5,10.5))
+
+x1=xCenter-(squareSize/2)
+y1=yCenter-(squareSize/2)
+x2=xCenter+(squareSize/2)
+y2=yCenter+(squareSize/2)
+
+croppingMask=(x1,y1,x2,y2)
+
+leftUpSquareCropped=img.crop(croppingMask)
+
+leftUpSquareCropped.save('2.jpg')
+
+#Superior derecha (4)
+#Coordenadas respecto del cuadrado central
+centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2)
+#Coordenadas respecto del central
+xCenter=img.width/randomXCenter+centralSquareDistance+float(random.uniform(-10.5,10.5))
+yCenter=img.height/randomYCenter-centralSquareDistance+float(random.uniform(-10.5,10.5))
+
+x1=xCenter-(squareSize/2)
+y1=yCenter-(squareSize/2)
+x2=xCenter+(squareSize/2)
+y2=yCenter+(squareSize/2)
+
+croppingMask=(x1,y1,x2,y2)
+
+rightUpSquareCropped=img.crop(croppingMask)
+
+rightUpSquareCropped.save('4.jpg')
+
+#Inferior izquierda (8)
+
+centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2)
+#Coordenadas respecto del central
+xCenter=img.width/randomXCenter-centralSquareDistance+float(random.uniform(-10.5,10.5))
+yCenter=img.height/randomYCenter+centralSquareDistance+float(random.uniform(-10.5,10.5))
+
+x1=xCenter-(squareSize/2)
+y1=yCenter-(squareSize/2)
+x2=xCenter+(squareSize/2)
+y2=yCenter+(squareSize/2)
+
+croppingMask=(x1,y1,x2,y2)
+
+leftDownSquareCropped=img.crop(croppingMask)
+
+leftDownSquareCropped.save('8.jpg')
+
+#Inferior derecha(6)
+#Coordenadas respecto del cuadrado central
+centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2)
+#Coordenadas respecto del central
+xCenter=img.width/randomXCenter+centralSquareDistance+float(random.uniform(-10.5,10.5))
+yCenter=img.height/randomYCenter+centralSquareDistance+float(random.uniform(-10.5,10.5))
+
+croppingMask=(x1,y1,x2,y2)
+
+rightDownSquareCropped=img.crop(croppingMask)
+
+rightDownSquareCropped.save('6.jpg')
