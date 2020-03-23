@@ -8,12 +8,13 @@ img=Image.open('./converted/img_0.jpg')
 
 #Obtención recorte central
 #randomCenter=random.uniform(1.5,3.5)
-randomXCenter=random.uniform(1.5,2.5)
-randomYCenter=random.uniform(1.5,2.5)
-squareSize=50
+#randomXCenter=random.uniform(1.5,2.5)
+#randomYCenter=random.uniform(1.5,2.5)
+squareSize=40
 
-xCenter=img.width/randomXCenter
-yCenter=img.height/randomYCenter
+xCenter=(img.width/2)+random.uniform(-30,30)
+yCenter=(img.height/2)+random.uniform(-30,30)
+print('X:',xCenter,'Y:',yCenter)
 x1=xCenter-(squareSize/2)
 y1=yCenter-(squareSize/2)
 x2=xCenter+(squareSize/2)
@@ -25,8 +26,9 @@ centralSquareCropped=img.crop(croppingMask)
 
 #centralSquareCropped.show('0')
 centralSquareCropped.save('0.jpg')
-
-
+"""
+randomXCenter=xCenter
+randomYCenter=yCenter
 #Obtención del recorte 1 (izquierda)-----------------------------------------
 #Distancia despecto del cuadradito central
 centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2) #Asi se aleja o acerca más del recorte del centro
@@ -174,3 +176,4 @@ croppingMask=(x1,y1,x2,y2)
 rightDownSquareCropped=img.crop(croppingMask)
 
 rightDownSquareCropped.save('6.jpg')
+"""
