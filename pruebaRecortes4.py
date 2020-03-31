@@ -3,16 +3,25 @@ import numpy as np
 import random
 
 img=Image.open('./converted/img_0.jpg')
-#tamaño del cuadrado
+#tamaño del cuadrado en pixels
 squareSize=20
+#Porcentaje de pixels que se pueden desplazar como maximo
+squareSizePercent=50
+#Pixeles que se pueden desplazar como maximo
+movementPixels=(squareSize*squareSizePercent)/100
 
+#Asertos-------------------
+assert 3*squareSize<=img.width*img.height
+assert squareSizePercent>=1 or squareSizePercent<=100
+
+#--------------------------
 
 #Obtencion recorte central aleatorio----------------------
 #Generando cuadrado dentral aleatorio
 
 #Genero un numero aleatorio que se le sumara o restara a las coordenadas centrales según una orientacion aleatoria
-randX=random.uniform(1,30)
-randY=random.uniform(1,30)
+randX=random.uniform(1,movementPixels)
+randY=random.uniform(1,movementPixels)
 
 randomOrientation=random.randint(0,8)#Genero aleatoriamente hacia donde quiero que vaya más o menos el recorte central
 print('Orientation:', randomOrientation)
@@ -107,10 +116,10 @@ centralSquareCropped.save('0.jpg')
 
 #Obtención del recorte 1 (izquierda)-----------------------------------------
 #Distancia despecto del cuadradito central
-centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2) #Asi se aleja o acerca más del recorte del centro
+centralSquareDistance=(squareSize/2)+float((random.randrange(movementPixels)+movementPixels))+(squareSize/2) #Asi se aleja o acerca más del recorte del centro
 #Coordenadas respecto del central
 xCenter=xDist-centralSquareDistance
-yCenter=yDist+float(random.uniform(-10.5,10.5))
+yCenter=yDist+float(random.uniform(-movementPixels,movementPixels))
 
 x1=xCenter-(squareSize/2)
 y1=yCenter-(squareSize/2)
@@ -126,9 +135,9 @@ leftSquareCropped.save('1.jpg')
 
 #Obtención del recorte 3 (arriba)-------------------------------------
 #Distancia respecto al cuadrado central
-centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2)
+centralSquareDistance=(squareSize/2)+float((random.randrange(movementPixels)+movementPixels))+(squareSize/2)
 #Coordenadas respecto del central
-xCenter=xDist+float(random.uniform(-10.5,10.5))
+xCenter=xDist+float(random.uniform(-movementPixels,movementPixels))
 yCenter=yDist-centralSquareDistance
 
 x1=xCenter-(squareSize/2)
@@ -146,9 +155,9 @@ upSquareCropped.save('3.jpg')
 
 #Obtencion del recorte 7 (abajo)
 #Distancia respecto al cuadrado central
-centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2)
+centralSquareDistance=(squareSize/2)+float((random.randrange(movementPixels)+movementPixels))+(squareSize/2)
 #Coordenadas respecto del central
-xCenter=xDist+float(random.uniform(-10.5,10.5))
+xCenter=xDist+float(random.uniform(-movementPixels,movementPixels))
 yCenter=yDist+centralSquareDistance
 
 x1=xCenter-(squareSize/2)
@@ -166,10 +175,10 @@ downSquareCropped.save('7.jpg')
 
 #Obtencion del recorte 5 (derecha)
 #Distancia despecto del cuadradito central
-centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2) #Asi se aleja o acerca más del recorte del centro
+centralSquareDistance=(squareSize/2)+float((random.randrange(movementPixels)+movementPixels))+(squareSize/2) #Asi se aleja o acerca más del recorte del centro
 #Coordenadas respecto del central
 xCenter=xDist+centralSquareDistance
-yCenter=yDist+float(random.uniform(-10.5,10.5))
+yCenter=yDist+float(random.uniform(-movementPixels,movementPixels))
 
 x1=xCenter-(squareSize/2)
 y1=yCenter-(squareSize/2)
@@ -187,10 +196,10 @@ rightSquareCropped.save('5.jpg')
 
 #Superior izquierda (2)
 #Coordenadas respecto del cuadrado central
-centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2)
+centralSquareDistance=(squareSize/2)+float((random.randrange(movementPixels)+movementPixels))+(squareSize/2)
 #Coordenadas respecto del central
-xCenter=xDist-centralSquareDistance+float(random.uniform(-10.5,10.5))
-yCenter=yDist-centralSquareDistance+float(random.uniform(-10.5,10.5))
+xCenter=xDist-centralSquareDistance+float(random.uniform(-movementPixels,movementPixels))
+yCenter=yDist-centralSquareDistance+float(random.uniform(-movementPixels,movementPixels))
 
 x1=xCenter-(squareSize/2)
 y1=yCenter-(squareSize/2)
@@ -205,10 +214,10 @@ leftUpSquareCropped.save('2.jpg')
 
 #Superior derecha (4)
 #Coordenadas respecto del cuadrado central
-centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2)
+centralSquareDistance=(squareSize/2)+float((random.randrange(movementPixels)+movementPixels))+(squareSize/2)
 #Coordenadas respecto del central
-xCenter=xDist+centralSquareDistance+float(random.uniform(-10.5,10.5))
-yCenter=yDist-centralSquareDistance+float(random.uniform(-10.5,10.5))
+xCenter=xDist+centralSquareDistance+float(random.uniform(-movementPixels,movementPixels))
+yCenter=yDist-centralSquareDistance+float(random.uniform(-movementPixels,movementPixels))
 
 x1=xCenter-(squareSize/2)
 y1=yCenter-(squareSize/2)
@@ -223,10 +232,10 @@ rightUpSquareCropped.save('4.jpg')
 
 #Inferior izquierda (8)
 
-centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2)
+centralSquareDistance=(squareSize/2)+float((random.randrange(movementPixels)+movementPixels))+(squareSize/2)
 #Coordenadas respecto del central
-xCenter=xDist-centralSquareDistance-float(random.uniform(-10.5,10.5))
-yCenter=yDist+centralSquareDistance+float(random.uniform(-10.5,10.5))
+xCenter=xDist-centralSquareDistance-float(random.uniform(-movementPixels,movementPixels))
+yCenter=yDist+centralSquareDistance+float(random.uniform(-movementPixels,movementPixels))
 
 x1=xCenter-(squareSize/2)
 y1=yCenter-(squareSize/2)
@@ -241,10 +250,10 @@ leftDownSquareCropped.save('8.jpg')
 
 #Inferior derecha(6)
 #Coordenadas respecto del cuadrado central
-centralSquareDistance=(squareSize/2)+float((random.randrange(20)+10))+(squareSize/2)
+centralSquareDistance=(squareSize/2)+float((random.randrange(movementPixels)+movementPixels))+(squareSize/2)
 #Coordenadas respecto del central
-xCenter=xDist+centralSquareDistance+float(random.uniform(-10.5,10.5))
-yCenter=yDist+centralSquareDistance+float(random.uniform(-10.5,10.5))
+xCenter=xDist+centralSquareDistance+float(random.uniform(-movementPixels,movementPixels))
+yCenter=yDist+centralSquareDistance+float(random.uniform(-movementPixels,movementPixels))
 
 x1=xCenter-(squareSize/2)
 y1=yCenter-(squareSize/2)
