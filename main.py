@@ -9,7 +9,7 @@ def menu():
     print("Work modes:")
     print("\t1 - Read single DCM image")
     print("\t2 - Transform DCM dataset into JPG images")
-    print("\t3 - Still in development")
+    print("\t3 - Generate Dataset")
     print("\t9 - Exit")
 
 
@@ -23,11 +23,10 @@ while True:
 
     if option == "1":
         print("This will show all the info of a DCM image given ")
-
         found = 1
         while (found != 0):
 
-            imgPath = input('Insert IMG name ->')
+            imgPath = input('Insert IMG name -> ')
 
             if os.path.isfile(imgPath):
 
@@ -49,8 +48,13 @@ while True:
         obj.readDCMdataset(datasetPath)
 
     elif option == "3":
-        print("")
+        print("This will generate the Dataset")
+        imgPath=input('Enter IMG Path -> ')
+        sqSize=int(input('Enter the square size -> '))
+        sqPercent=int(input('Enter the percentaje of variation in the distances -> '))
+        obj.generateDataset(imgPath,sqSize,sqPercent)
         input("Press any key to continue")
+
     elif option == "9":
         break
     else:

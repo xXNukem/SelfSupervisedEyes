@@ -4,7 +4,10 @@ import os
 from PIL import Image, ImageOps
 import numpy as np
 import cv2
-
+import numpy as np
+import random
+from os import listdir
+import auxfunctions
 class readIMG:
 
     def readDCMimage(self,imgName):
@@ -85,3 +88,297 @@ class readIMG:
             saveNumber = saveNumber + 1
 
         print('Dataset transformed to JPG images into ./converted folder')
+
+    def generateDataset(self,imgPath,sqSize,sqPercent):
+
+        if os.path.exists('./dataset')==False:
+            os.mkdir('./dataset')
+
+        imgDir=listdir(imgPath)
+        # tamaño del cuadrado en pixels
+        squareSize = sqSize
+        # Porcentaje de pixels que se pueden desplazar como maximo
+        squareSizePercent = sqPercent
+        # Pixeles que se pueden desplazar como maximo
+        movementPixels = (squareSize * squareSizePercent) / 100
+        assert squareSizePercent >= 1 or squareSizePercent <= 100
+
+        """Nomenclatura para el guardado de la imagen
+            2   3   4
+            1   C   5
+            8   7   6
+        Ejemplo: img_X_Y
+        X: numero de imagen (centro)
+        Y: numero de pareja perteneciente a X
+        
+            Si tengo img_5_2
+            signigica que es la pareja 2 del centro 5
+            
+            Si tengo img_5
+            significa que es el centro 5
+        En caso de que la imagen tenga otro nombre:
+        
+            nombreImagen: Centro
+            nombreImagen_1: Pareja 1 del centro 'nombreImagen'
+        ---------------------------------------------"""
+
+        for i in imgDir:
+            name,exte=auxfunctions.splitfilename(i)#extrayendo el nombre del archivo sin la extensión
+            print('Generating crops for:',i)
+            img = Image.open(imgPath+'/'+i)
+            assert 3 * squareSize <= img.width * img.height
+            # --------------------------
+            # Obtencion recorte central aleatorio----------------------
+            # Generando cuadrado dentral aleatorio
+            # Genero un numero aleatorio que se le sumara o restara a las coordenadas centrales según una orientacion aleatoria
+            randX = random.uniform(1, movementPixels)
+            randY = random.uniform(1, movementPixels)
+
+            randomOrientation = random.randint(0, 8)  # Genero aleatoriamente hacia donde quiero que vaya más o menos el recorte central
+            print('Orientation:', randomOrientation)
+
+            # El recorte central se desplaza hacia la izquierda
+            if randomOrientation == 1:
+                xCenter = (img.width / 2) - randX
+                yCenter = (img.height / 2)
+                print('X:', xCenter, 'Y:', yCenter)
+                xDist = (img.width / 2) - randX  # xDist e yDist serán las varaibles para luego calcular los nuevos centros, no deben sobreescribirse con xCenter e yCenter
+                yDist = (img.height / 2)
+
+            # El recorte central se desplaza hacia la diagonal superior izquierda
+            if randomOrientation == 2:
+                xCenter = (img.width / 2) - randX
+                yCenter = (img.height / 2) - randY
+                print('X:', xCenter, 'Y:', yCenter)
+                xDist = (img.width / 2) - randX
+                yDist = (img.height / 2) - randY
+
+            # El recorte central se deplaza hacia arriba
+            if randomOrientation == 3:
+                xCenter = (img.width / 2)
+                yCenter = (img.height / 2) - randY
+                print('X:', xCenter, 'Y:', yCenter)
+                xDist = (img.width / 2)
+                yDist = (img.height / 2) - randY
+
+            # El recorte central se desplaza a la diagonal superior derecha
+            if randomOrientation == 4:
+                xCenter = (img.width / 2) + randX
+                yCenter = (img.height / 2) - randY
+                print('X:', xCenter, 'Y:', yCenter)
+                xDist = (img.width / 2) + randX
+                yDist = (img.height / 2) - randY
+
+            # El recorte central se desplaza a la derecha
+            if randomOrientation == 5:
+                xCenter = (img.width / 2) + randX
+                yCenter = (img.height / 2) - randY
+                print('X:', xCenter, 'Y:', yCenter)
+                xDist = (img.width / 2) + randX
+                yDist = (img.height / 2) - randY
+
+            # El recorte central se desplaza a la exquina inferior derecha
+            if randomOrientation == 6:
+                xCenter = (img.width / 2) + randX
+                yCenter = (img.height / 2) + randY
+                print('X:', xCenter, 'Y:', yCenter)
+                xDist = (img.width / 2) + randX
+                yDist = (img.height / 2) + randY
+
+            # El recorte central se desplaza hacia abajo
+            if randomOrientation == 7:
+                xCenter = (img.width / 2)
+                yCenter = (img.height / 2) + randY
+                print('X:', xCenter, 'Y:', yCenter)
+                xDist = (img.width / 2)
+                yDist = (img.height / 2) + randY
+
+            # El recorte central se desplaza a la diagonal inferior izquierda
+            if randomOrientation == 8:
+                xCenter = (img.width / 2) - randX
+                yCenter = (img.height / 2) + randY
+                print('X:', xCenter, 'Y:', yCenter)
+                xDist = (img.width / 2) - randX
+                yDist = (img.height / 2) + randY
+
+            # El recorte central se queda centrado
+            if randomOrientation == 0:
+                xCenter = (img.width / 2)
+                yCenter = (img.height / 2)
+                print('X:', xCenter, 'Y:', yCenter)
+                xDist = (img.width / 2)
+                yDist = (img.height / 2)
+
+            # Cortamos y guardamos el cuadrado central
+
+            x1 = xCenter - (squareSize / 2)
+            y1 = yCenter - (squareSize / 2)
+            x2 = xCenter + (squareSize / 2)
+            y2 = yCenter + (squareSize / 2)
+
+            croppingMask = (x1, y1, x2, y2)
+
+            centralSquareCropped = img.crop(croppingMask)
+
+            # centralSquareCropped.show('0')
+            centralSquareCropped.save('./dataset/'+name+'.jpg')
+
+            # OBTENER EL RESTO DE RECORTES---------------------------------------------------------------------------------------------------
+
+            # Obtención del recorte 1 (izquierda)-----------------------------------------
+            # Distancia despecto del cuadradito central
+            centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
+                        squareSize / 2)  # Asi se aleja o acerca más del recorte del centro
+            # Coordenadas respecto del central
+            xCenter = xDist - centralSquareDistance
+            yCenter = yDist + float(random.uniform(-movementPixels, movementPixels))
+
+            x1 = xCenter - (squareSize / 2)
+            y1 = yCenter - (squareSize / 2)
+            x2 = xCenter + (squareSize / 2)
+            y2 = yCenter + (squareSize / 2)
+
+            croppingMask = (x1, y1, x2, y2)
+
+            leftSquareCropped = img.crop(croppingMask)
+
+            # leftSquareCropped.show('img1')
+            leftSquareCropped.save('./dataset/'+name+'_1.jpg')
+
+            # Obtención del recorte 3 (arriba)-------------------------------------
+            # Distancia respecto al cuadrado central
+            centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
+                        squareSize / 2)
+            # Coordenadas respecto del central
+            xCenter = xDist + float(random.uniform(-movementPixels, movementPixels))
+            yCenter = yDist - centralSquareDistance
+
+            x1 = xCenter - (squareSize / 2)
+            y1 = yCenter - (squareSize / 2)
+            x2 = xCenter + (squareSize / 2)
+            y2 = yCenter + (squareSize / 2)
+
+            croppingMask = (x1, y1, x2, y2)
+
+            upSquareCropped = img.crop(croppingMask)
+
+            # upSquareCropped.show('img3')
+            upSquareCropped.save('./dataset/'+name+'_3.jpg')
+
+            # Obtencion del recorte 7 (abajo)
+            # Distancia respecto al cuadrado central
+            centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
+                        squareSize / 2)
+            # Coordenadas respecto del central
+            xCenter = xDist + float(random.uniform(-movementPixels, movementPixels))
+            yCenter = yDist + centralSquareDistance
+
+            x1 = xCenter - (squareSize / 2)
+            y1 = yCenter - (squareSize / 2)
+            x2 = xCenter + (squareSize / 2)
+            y2 = yCenter + (squareSize / 2)
+
+            croppingMask = (x1, y1, x2, y2)
+
+            downSquareCropped = img.crop(croppingMask)
+
+            # downSquareCropped.show('img7')
+            downSquareCropped.save('./dataset/'+name+'_7.jpg')
+
+            # Obtencion del recorte 5 (derecha)
+            # Distancia despecto del cuadradito central
+            centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
+                        squareSize / 2)  # Asi se aleja o acerca más del recorte del centro
+            # Coordenadas respecto del central
+            xCenter = xDist + centralSquareDistance
+            yCenter = yDist + float(random.uniform(-movementPixels, movementPixels))
+
+            x1 = xCenter - (squareSize / 2)
+            y1 = yCenter - (squareSize / 2)
+            x2 = xCenter + (squareSize / 2)
+            y2 = yCenter + (squareSize / 2)
+
+            croppingMask = (x1, y1, x2, y2)
+
+            rightSquareCropped = img.crop(croppingMask)
+
+            # rightSquareCropped.show('img5')
+            rightSquareCropped.save('./dataset/'+name+'_5.jpg')
+
+            # OBTENCION DE LAS DIAGONALES----------------------------------------------------------------------------------
+
+            # Superior izquierda (2)
+            # Coordenadas respecto del cuadrado central
+            centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
+                        squareSize / 2)
+            # Coordenadas respecto del central
+            xCenter = xDist - centralSquareDistance + float(random.uniform(-movementPixels, movementPixels))
+            yCenter = yDist - centralSquareDistance + float(random.uniform(-movementPixels, movementPixels))
+
+            x1 = xCenter - (squareSize / 2)
+            y1 = yCenter - (squareSize / 2)
+            x2 = xCenter + (squareSize / 2)
+            y2 = yCenter + (squareSize / 2)
+
+            croppingMask = (x1, y1, x2, y2)
+
+            leftUpSquareCropped = img.crop(croppingMask)
+
+            leftUpSquareCropped.save('./dataset/'+name+'_2.jpg')
+
+            # Superior derecha (4)
+            # Coordenadas respecto del cuadrado central
+            centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
+                        squareSize / 2)
+            # Coordenadas respecto del central
+            xCenter = xDist + centralSquareDistance + float(random.uniform(-movementPixels, movementPixels))
+            yCenter = yDist - centralSquareDistance + float(random.uniform(-movementPixels, movementPixels))
+
+            x1 = xCenter - (squareSize / 2)
+            y1 = yCenter - (squareSize / 2)
+            x2 = xCenter + (squareSize / 2)
+            y2 = yCenter + (squareSize / 2)
+
+            croppingMask = (x1, y1, x2, y2)
+
+            rightUpSquareCropped = img.crop(croppingMask)
+
+            rightUpSquareCropped.save('./dataset/'+name+'_4.jpg')
+
+            # Inferior izquierda (8)
+
+            centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
+                        squareSize / 2)
+            # Coordenadas respecto del central
+            xCenter = xDist - centralSquareDistance - float(random.uniform(-movementPixels, movementPixels))
+            yCenter = yDist + centralSquareDistance + float(random.uniform(-movementPixels, movementPixels))
+
+            x1 = xCenter - (squareSize / 2)
+            y1 = yCenter - (squareSize / 2)
+            x2 = xCenter + (squareSize / 2)
+            y2 = yCenter + (squareSize / 2)
+
+            croppingMask = (x1, y1, x2, y2)
+
+            leftDownSquareCropped = img.crop(croppingMask)
+
+            leftDownSquareCropped.save('./dataset/'+name+'_8.jpg')
+
+            # Inferior derecha(6)
+            # Coordenadas respecto del cuadrado central
+            centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
+                        squareSize / 2)
+            # Coordenadas respecto del central
+            xCenter = xDist + centralSquareDistance + float(random.uniform(-movementPixels, movementPixels))
+            yCenter = yDist + centralSquareDistance + float(random.uniform(-movementPixels, movementPixels))
+
+            x1 = xCenter - (squareSize / 2)
+            y1 = yCenter - (squareSize / 2)
+            x2 = xCenter + (squareSize / 2)
+            y2 = yCenter + (squareSize / 2)
+
+            croppingMask = (x1, y1, x2, y2)
+
+            rightDownSquareCropped = img.crop(croppingMask)
+
+            rightDownSquareCropped.save('./dataset/'+name+'3_6.jpg')
