@@ -14,8 +14,7 @@ input_shape=(240,240,3)
 
 #Funcion que define la red siamesa
 def createBaseNetwork(input_shape):
-    '''Base network to be shared (eq. to feature extraction).
-    '''
+
     input = Input(shape=input_shape)
     print(input)
     #x = Flatten()(input)
