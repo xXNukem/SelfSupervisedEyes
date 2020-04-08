@@ -10,6 +10,7 @@ from keras import backend as K
 
 numClasses = 8
 epochs = 20
+numBatches= 10
 input_shape=(240,240,3)
 
 #Funcion que define la red siamesa
@@ -33,6 +34,7 @@ def createBaseNetwork(input_shape):
 
     return Model(input, x)
 
+#---------------------------------------------------------------------------------
 def getSiameseNetWork(input_shape,numClasses):
     base_network = createBaseNetwork(input_shape)
 
@@ -54,10 +56,13 @@ def getSiameseNetWork(input_shape,numClasses):
 
     return model
 
+#----------------------------------------------------------------------------------------
+    
 model=getSiameseNetWork(input_shape,numClasses)
 
 model.compile(loss='categorical_crossentropy',
             optimizer='adam',
-            metrics=['acc', 'mse'])
+            metrics=['acc'])
 
 model.summary()
+

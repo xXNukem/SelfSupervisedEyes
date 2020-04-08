@@ -8,6 +8,7 @@ import numpy as np
 import random
 from os import listdir
 import auxfunctions
+
 class readIMG:
 
     def readDCMimage(self,imgName):
@@ -88,7 +89,7 @@ class readIMG:
             saveNumber = saveNumber + 1
 
         print('Dataset transformed to JPG images into ./converted folder')
-
+#------------------------------------------------------------------------------------------------------
     def generateDataset(self,imgPath,sqSize,sqPercent):
 
         if os.path.exists('./dataset')==False:
@@ -103,27 +104,20 @@ class readIMG:
         movementPixels = (squareSize * squareSizePercent) / 100
         assert squareSizePercent >= 1 or squareSizePercent <= 100
 
-        """Nomenclatura para el guardado de la imagen
-            2   3   4
-            1   C   5
-            8   7   6
-        Ejemplo: img_X_Y
-        X: numero de imagen (centro)
-        Y: numero de pareja perteneciente a X
+        """Forma de guardar los recortes de la imagen
+            1   2   3
+            0   C   4
+            7   6   5
         
-            Si tengo img_5_2
-            signigica que es la pareja 2 del centro 5
-            
-            Si tengo img_5
-            significa que es el centro 5
-        En caso de que la imagen tenga otro nombre:
-        
-            nombreImagen: Centro
-            nombreImagen_1: Pareja 1 del centro 'nombreImagen'
+            -Se crea una carpeta por cada imagen
+            -Se guaran los recortes con la nomenclatura de arriba
         ---------------------------------------------"""
 
         for i in imgDir:
             name,exte=auxfunctions.splitfilename(i)#extrayendo el nombre del archivo sin la extensión
+            dir='./dataset/'+name
+            os.mkdir(dir)
+
             print('Generating crops for:',i)
             img = Image.open(imgPath+'/'+i)
             assert 3 * squareSize <= img.width * img.height
@@ -221,11 +215,12 @@ class readIMG:
             centralSquareCropped = img.crop(croppingMask)
 
             # centralSquareCropped.show('0')
-            centralSquareCropped.save('./dataset/'+name+'.jpg')
+
+            centralSquareCropped.save('./dataset/'+name+'/c.jpg')
 
             # OBTENER EL RESTO DE RECORTES---------------------------------------------------------------------------------------------------
 
-            # Obtención del recorte 1 (izquierda)-----------------------------------------
+            # Obtención del recorte 0 (izquierda)-----------------------------------------
             # Distancia despecto del cuadradito central
             centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
                         squareSize / 2)  # Asi se aleja o acerca más del recorte del centro
@@ -243,9 +238,10 @@ class readIMG:
             leftSquareCropped = img.crop(croppingMask)
 
             # leftSquareCropped.show('img1')
-            leftSquareCropped.save('./dataset/'+name+'_1.jpg')
 
-            # Obtención del recorte 3 (arriba)-------------------------------------
+            leftSquareCropped.save('./dataset/'+name+'/0.jpg')
+
+            # Obtención del recorte 2 (arriba)-------------------------------------
             # Distancia respecto al cuadrado central
             centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
                         squareSize / 2)
@@ -263,9 +259,10 @@ class readIMG:
             upSquareCropped = img.crop(croppingMask)
 
             # upSquareCropped.show('img3')
-            upSquareCropped.save('./dataset/'+name+'_3.jpg')
 
-            # Obtencion del recorte 7 (abajo)
+            upSquareCropped.save('./dataset/'+name+'/2.jpg')
+
+            # Obtencion del recorte 6 (abajo)
             # Distancia respecto al cuadrado central
             centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
                         squareSize / 2)
@@ -283,9 +280,10 @@ class readIMG:
             downSquareCropped = img.crop(croppingMask)
 
             # downSquareCropped.show('img7')
-            downSquareCropped.save('./dataset/'+name+'_7.jpg')
 
-            # Obtencion del recorte 5 (derecha)
+            downSquareCropped.save('./dataset/'+name+'/6.jpg')
+
+            # Obtencion del recorte 4 (derecha)
             # Distancia despecto del cuadradito central
             centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
                         squareSize / 2)  # Asi se aleja o acerca más del recorte del centro
@@ -303,11 +301,12 @@ class readIMG:
             rightSquareCropped = img.crop(croppingMask)
 
             # rightSquareCropped.show('img5')
-            rightSquareCropped.save('./dataset/'+name+'_5.jpg')
+
+            rightSquareCropped.save('./dataset/'+name+'/4.jpg')
 
             # OBTENCION DE LAS DIAGONALES----------------------------------------------------------------------------------
 
-            # Superior izquierda (2)
+            # Superior izquierda (1)
             # Coordenadas respecto del cuadrado central
             centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
                         squareSize / 2)
@@ -324,9 +323,9 @@ class readIMG:
 
             leftUpSquareCropped = img.crop(croppingMask)
 
-            leftUpSquareCropped.save('./dataset/'+name+'_2.jpg')
+            leftUpSquareCropped.save('./dataset/'+name+'/1.jpg')
 
-            # Superior derecha (4)
+            # Superior derecha (3)
             # Coordenadas respecto del cuadrado central
             centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
                         squareSize / 2)
@@ -343,9 +342,9 @@ class readIMG:
 
             rightUpSquareCropped = img.crop(croppingMask)
 
-            rightUpSquareCropped.save('./dataset/'+name+'_4.jpg')
+            rightUpSquareCropped.save('./dataset/'+name+'/3.jpg')
 
-            # Inferior izquierda (8)
+            # Inferior izquierda (7)
 
             centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
                         squareSize / 2)
@@ -362,9 +361,9 @@ class readIMG:
 
             leftDownSquareCropped = img.crop(croppingMask)
 
-            leftDownSquareCropped.save('./dataset/'+name+'_8.jpg')
+            leftDownSquareCropped.save('./dataset/'+name+'/7.jpg')
 
-            # Inferior derecha(6)
+            # Inferior derecha(5)
             # Coordenadas respecto del cuadrado central
             centralSquareDistance = (squareSize / 2) + float((random.randrange(int(movementPixels)) + movementPixels)) + (
                         squareSize / 2)
@@ -381,4 +380,4 @@ class readIMG:
 
             rightDownSquareCropped = img.crop(croppingMask)
 
-            rightDownSquareCropped.save('./dataset/'+name+'3_6.jpg')
+            rightDownSquareCropped.save('./dataset/'+name+'/5.jpg')
