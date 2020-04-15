@@ -2,6 +2,7 @@ from os import listdir,path
 import cv2
 import numpy as np
 import os
+import random
 
 def splitfilename(filename):
     sname=""

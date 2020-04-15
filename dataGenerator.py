@@ -1,7 +1,7 @@
 import numpy as np
 import keras
 import cv2
-
+import random
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
     def __init__(self, imgList, list_IDs, batch_size=32, dim=(32,32,32), n_channels=1,
@@ -63,3 +63,20 @@ class DataGenerator(keras.utils.Sequence):
             """
 
         return [X,K], keras.utils.to_categorical(y, num_classes=self.n_classes)
+    #Divide el conjunto de datos en entrenamiento y validacion
+    def splitGenerator(imglist,percent):
+
+        train = []
+        validation = []
+        validationPercent = (percent * int(len(imglist))) / 100
+        for i in range(1, int(validationPercent)):
+            index = random.randrange(int(len(imglist)))
+            aux = imglist[index]
+            if aux not in validation:
+                validation.append(aux)
+                imglist.pop(index)
+            else:
+                i = i - 1
+        train = imglist
+
+        return train, validation
