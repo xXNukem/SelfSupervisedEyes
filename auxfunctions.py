@@ -21,9 +21,8 @@ def loadimgspath(path):
 
     for i in listdir(path):
         imgs=listdir(path+'/'+i)
-
         for j in ['0','1','2','3','4','5','6','7']:
-                #Centro                 cuadrado        etiqueta
+                #Centro                 cuadrado                    etiqueta
             aux=(path+'/'+i+'/'+imgs[8],path+'/'+i+'/'+imgs[int(j)],j)
             X.append(aux)
 

@@ -71,7 +71,7 @@ class readIMG:
 
     #------------------------------------------------------------------------------------------------------------
 
-    def readDCMdataset(self,DCMPath):
+    def readDCMdataset(self,DCMPath,width,height):
         lstFilesDCM=[]
         for dirName,subDirList,fileList in os.walk(DCMPath):
             for fileName in fileList:
@@ -81,10 +81,11 @@ class readIMG:
         if os.path.exists('./converted')==False:
             os.mkdir('./converted')
         for files in lstFilesDCM:
+            print('Converting ',files)
             dataset = pydicom.dcmread(files)
             Image.fromarray(dataset.pixel_array).save("./converted/img_" + str(saveNumber) + ".jpg")
             originalIMG = cv2.imread("./converted/img_" + str(saveNumber) + ".jpg")
-            resizedIMG = self.image_resize(originalIMG, width=240, height=240)
+            resizedIMG = self.image_resize(originalIMG, width=width, height=height)
             cv2.imwrite("./converted/img_" + str(saveNumber) + ".jpg", resizedIMG)
             saveNumber = saveNumber + 1
 

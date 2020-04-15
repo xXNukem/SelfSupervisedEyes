@@ -4,12 +4,11 @@ import cv2
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
-    def __init__(self, imgList, list_IDs, labels, batch_size=32, dim=(32,32,32), n_channels=1,
+    def __init__(self, imgList, list_IDs, batch_size=32, dim=(32,32,32), n_channels=1,
                  n_classes=10, shuffle=True):
         'Initialization'
         self.dim = dim
         self.batch_size = batch_size
-        self.labels = labels
         self.list_IDs = list_IDs
         self.n_channels = n_channels
         self.n_classes = n_classes
@@ -63,4 +62,4 @@ class DataGenerator(keras.utils.Sequence):
             y[i] = self.labels[ID]
             """
 
-        return X,K, keras.utils.to_categorical(y, num_classes=self.n_classes)
+        return [X,K], keras.utils.to_categorical(y, num_classes=self.n_classes)

@@ -7,11 +7,12 @@ from keras.models import Sequential, Model
 from keras.layers import Input, Flatten, Dense, Dropout, Lambda, Conv2D,MaxPooling2D, Concatenate
 from keras.optimizers import RMSprop
 from keras import backend as K
+import dataGenerator
+import auxfunctions
 
 numClasses = 8
-epochs = 20
-numBatches= 10
-input_shape=(240,240,3)
+
+input_shape=(30,30,3)
 
 #Funcion que define la red siamesa
 def createBaseNetwork(input_shape):
@@ -60,9 +61,22 @@ def getSiameseNetWork(input_shape,numClasses):
     
 model=getSiameseNetWork(input_shape,numClasses)
 
+#Obtencion de la lista de tuplas con las rutas de las imagenes
+imgList=auxfunctions.loadimgspath('./dataset')
+
+params = {'dim': (30,30),
+          'batch_size': 5,
+          'n_classes': 8,
+          'n_channels': 3,
+          'shuffle': True}
+
+ID_List=[1,2,3,4,5]
+
+training_generator=dataGenerator.DataGenerator(imgList,ID_List,**params)
+
 model.compile(loss='categorical_crossentropy',
             optimizer='adam',
             metrics=['acc'])
 
-model.summary()
 
+model.fit_generator(generator=training_generator)

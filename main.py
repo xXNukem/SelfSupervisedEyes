@@ -43,9 +43,11 @@ while True:
 
 
     elif option == "2":
-        print("This will read a DCM dataset")
+        print("This will read a DCM dataset and transform it to JPG images with a new resolution")
         datasetPath=input('Enter dataset path ->')
-        obj.readDCMdataset(datasetPath)
+        width=int(input('Width - >'))
+        height=int(input('Height ->'))
+        obj.readDCMdataset(datasetPath,width,height)
 
     elif option == "3":
         print("This will generate the Dataset")
