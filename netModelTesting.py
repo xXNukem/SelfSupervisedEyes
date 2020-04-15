@@ -6,13 +6,15 @@ from keras.datasets import mnist
 from keras.models import Sequential, Model
 from keras.layers import Input, Flatten, Dense, Dropout, Lambda, Conv2D,MaxPooling2D, Concatenate
 from keras.optimizers import RMSprop
-from keras import backend as K
 import dataGenerator
 import auxfunctions
+import keras as K
+K.backend.set_image_data_format('channels_last')
+
 
 numClasses = 8
 
-input_shape=(30,30,3)
+input_shape=(240,240,3)
 
 #Funcion que define la red siamesa
 def createBaseNetwork(input_shape):
@@ -63,6 +65,10 @@ model=getSiameseNetWork(input_shape,numClasses)
 
 #Obtencion de la lista de tuplas con las rutas de las imagenes
 imgList=auxfunctions.loadimgspath('./dataset')
+#Obtencion del conjutno de entrenamiento y validacion con un 25% en validacion
+train,validation=dataGenerator.DataGenerator.splitGenerator(imgList,25)
+print(train)
+print(validation)
 
 params = {'dim': (30,30),
           'batch_size': 5,
@@ -72,11 +78,11 @@ params = {'dim': (30,30),
 
 ID_List=[1,2,3,4,5]
 
-training_generator=dataGenerator.DataGenerator(imgList,ID_List,**params)
-
+training_generator=dataGenerator.DataGenerator(train,ID_List,**params)
+validation_generator=dataGenerator.DataGenerator(validation,ID_List,**params)
 model.compile(loss='categorical_crossentropy',
             optimizer='adam',
             metrics=['acc'])
 
 
-model.fit_generator(generator=training_generator)
+model.fit_generator(generator=training_generator,validation_data=validation_generator)
