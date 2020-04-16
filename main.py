@@ -1,5 +1,6 @@
 "Modulos propios"
 import readDCM
+import auxfunctions
 "Modulos externos"
 import os
 
@@ -10,6 +11,8 @@ def menu():
     print("\t1 - Read single DCM image")
     print("\t2 - Transform DCM dataset into JPG images")
     print("\t3 - Generate Dataset")
+    print('\t4 - Resize JPG images')
+    print('\t5 - Generate train/validation split')
     print("\t9 - Exit")
 
 
@@ -54,7 +57,25 @@ while True:
         imgPath=input('Enter IMG Path -> ')
         sqSize=int(input('Enter the square size -> '))
         sqPercent=int(input('Enter the percentaje of variation in the distances -> '))
-        obj.generateDataset(imgPath,sqSize,sqPercent)
+        pathname=input('Enter a name for the folder wich will contain the dataset -> ')
+        obj.generateDataset(imgPath,sqSize,sqPercent,pathname)
+        input("Press any key to continue")
+
+    elif option == '4':
+        print('This will resize a folder wich contains JPG images')
+        imgPath=input('Enter IMG path -> ')
+        width=int(input('Enter width -> '))
+        height=int(input('Enter height -> '))
+        destination=input('Enter the name of the destination folder -> ')
+        obj.resizeJPGfolder(imgPath,width,height,destination)
+        input("Press any key to continue")
+
+    elif option=='5':
+        print('This will split your dataset into train and validation sets and save into .csv files')
+        datasetPath=input('Enter the path of your dataset ->')
+        percent=int(input('Enter percentaje for validation -> '))
+        imglist=auxfunctions.loadimgspath(datasetPath)
+        auxfunctions.splitGenerator(imglist,percent)
         input("Press any key to continue")
 
     elif option == "9":

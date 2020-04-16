@@ -8,6 +8,7 @@ import numpy as np
 import random
 from os import listdir
 import auxfunctions
+from shutil import rmtree
 
 class readIMG:
 
@@ -69,6 +70,21 @@ class readIMG:
         # return the resized image
         return resized
 
+    def resizeJPGfolder(self,path,width,height,destination):
+
+        imgs=os.listdir('./'+path)
+
+        if os.path.exists('./'+destination)==False:
+            os.mkdir('./'+destination)
+
+        for i in imgs:
+            print(i)
+            original=cv2.imread('./'+path+'/'+i)
+            name,ext=auxfunctions.splitfilename(i)
+            resized=self.image_resize(original, width=width, height=height)
+            cv2.imwrite('./'+destination+'/'+name+'.jpg', resized)
+
+
     #------------------------------------------------------------------------------------------------------------
 
     def readDCMdataset(self,DCMPath,width,height):
@@ -91,10 +107,14 @@ class readIMG:
 
         print('Dataset transformed to JPG images into ./converted folder')
 #------------------------------------------------------------------------------------------------------
-    def generateDataset(self,imgPath,sqSize,sqPercent):
+    def generateDataset(self,imgPath,sqSize,sqPercent,pathname):
 
-        if os.path.exists('./dataset')==False:
-            os.mkdir('./dataset')
+        if os.path.exists('./'+pathname)==False:
+            os.mkdir('./'+pathname)
+        else:
+            os.chmod('./'+pathname,0o777)
+            rmtree('./'+pathname)
+            os.mkdir('./'+pathname)
 
         imgDir=listdir(imgPath)
         # tamaño del cuadrado en pixels
@@ -116,7 +136,7 @@ class readIMG:
 
         for i in imgDir:
             name,exte=auxfunctions.splitfilename(i)#extrayendo el nombre del archivo sin la extensión
-            dir='./dataset/'+name
+            dir='./'+pathname+'/'+name
             os.mkdir(dir)
 
             print('Generating crops for:',i)
@@ -217,7 +237,7 @@ class readIMG:
 
             # centralSquareCropped.show('0')
 
-            centralSquareCropped.save('./dataset/'+name+'/c.jpg')
+            centralSquareCropped.save('./'+pathname+'/'+name+'/c.jpg')
 
             # OBTENER EL RESTO DE RECORTES---------------------------------------------------------------------------------------------------
 
@@ -240,7 +260,7 @@ class readIMG:
 
             # leftSquareCropped.show('img1')
 
-            leftSquareCropped.save('./dataset/'+name+'/0.jpg')
+            leftSquareCropped.save('./'+pathname+'/'+name+'/0.jpg')
 
             # Obtención del recorte 2 (arriba)-------------------------------------
             # Distancia respecto al cuadrado central
@@ -261,7 +281,7 @@ class readIMG:
 
             # upSquareCropped.show('img3')
 
-            upSquareCropped.save('./dataset/'+name+'/2.jpg')
+            upSquareCropped.save('./'+pathname+'/'+name+'/2.jpg')
 
             # Obtencion del recorte 6 (abajo)
             # Distancia respecto al cuadrado central
@@ -282,7 +302,7 @@ class readIMG:
 
             # downSquareCropped.show('img7')
 
-            downSquareCropped.save('./dataset/'+name+'/6.jpg')
+            downSquareCropped.save('./'+pathname+'/'+name+'/6.jpg')
 
             # Obtencion del recorte 4 (derecha)
             # Distancia despecto del cuadradito central
@@ -303,7 +323,7 @@ class readIMG:
 
             # rightSquareCropped.show('img5')
 
-            rightSquareCropped.save('./dataset/'+name+'/4.jpg')
+            rightSquareCropped.save('./'+pathname+'/'+name+'/4.jpg')
 
             # OBTENCION DE LAS DIAGONALES----------------------------------------------------------------------------------
 
@@ -324,7 +344,7 @@ class readIMG:
 
             leftUpSquareCropped = img.crop(croppingMask)
 
-            leftUpSquareCropped.save('./dataset/'+name+'/1.jpg')
+            leftUpSquareCropped.save('./'+pathname+'/'+name+'/1.jpg')
 
             # Superior derecha (3)
             # Coordenadas respecto del cuadrado central
@@ -343,7 +363,7 @@ class readIMG:
 
             rightUpSquareCropped = img.crop(croppingMask)
 
-            rightUpSquareCropped.save('./dataset/'+name+'/3.jpg')
+            rightUpSquareCropped.save('./'+pathname+'/'+name+'/3.jpg')
 
             # Inferior izquierda (7)
 
@@ -362,7 +382,7 @@ class readIMG:
 
             leftDownSquareCropped = img.crop(croppingMask)
 
-            leftDownSquareCropped.save('./dataset/'+name+'/7.jpg')
+            leftDownSquareCropped.save('./'+pathname+'/'+name+'/7.jpg')
 
             # Inferior derecha(5)
             # Coordenadas respecto del cuadrado central
@@ -381,4 +401,4 @@ class readIMG:
 
             rightDownSquareCropped = img.crop(croppingMask)
 
-            rightDownSquareCropped.save('./dataset/'+name+'/5.jpg')
+            rightDownSquareCropped.save('./'+pathname+'/'+name+'/5.jpg')

@@ -8,13 +8,13 @@ from keras.layers import Input, Flatten, Dense, Dropout, Lambda, Conv2D,MaxPooli
 from keras.optimizers import RMSprop
 import dataGenerator
 import auxfunctions
-import keras as K
-K.backend.set_image_data_format('channels_last')
-
+from tensorflow.python.keras.utils.data_utils import Sequence
 
 numClasses = 8
-
-input_shape=(240,240,3)
+dataset='./retinopatyDataset'
+width=96 #diabetic retinopaty 120 120, drRafael 40 40, 96 96
+height=96
+input_shape=(width,height,3)
 
 #Funcion que define la red siamesa
 def createBaseNetwork(input_shape):
@@ -64,25 +64,33 @@ def getSiameseNetWork(input_shape,numClasses):
 model=getSiameseNetWork(input_shape,numClasses)
 
 #Obtencion de la lista de tuplas con las rutas de las imagenes
-imgList=auxfunctions.loadimgspath('./dataset')
+#imgList=auxfunctions.loadimgspath(dataset)
 #Obtencion del conjutno de entrenamiento y validacion con un 25% en validacion
-train,validation=dataGenerator.DataGenerator.splitGenerator(imgList,25)
-print(train)
-print(validation)
+train,validation=auxfunctions.getTrainValidationSplits()
+print (train)
+#creacion de ID List
+ID_List_train=[]
+ID_List_val=[]
+for i in range(0,len(train)):
+    ID_List_train.append(int(i))
+for i in range(0,len(validation)):
+    ID_List_val.append((int(i)))
 
-params = {'dim': (30,30),
-          'batch_size': 5,
+
+params = {'dim': (width,height),
+          'batch_size':64 ,
           'n_classes': 8,
           'n_channels': 3,
-          'shuffle': True}
+          'shuffle': True }
 
-ID_List=[1,2,3,4,5]
-
-training_generator=dataGenerator.DataGenerator(train,ID_List,**params)
-validation_generator=dataGenerator.DataGenerator(validation,ID_List,**params)
+training_generator=dataGenerator.DataGenerator(train,ID_List_train,**params)
+validation_generator=dataGenerator.DataGenerator(validation,ID_List_val,**params)
 model.compile(loss='categorical_crossentropy',
             optimizer='adam',
             metrics=['acc'])
 
 
-model.fit_generator(generator=training_generator,validation_data=validation_generator)
+model.fit_generator(generator=training_generator,
+                    validation_data=validation_generator,
+                    steps_per_epoch=100,
+                    epochs=15)

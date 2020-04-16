@@ -54,29 +54,5 @@ class DataGenerator(keras.utils.Sequence):
             K[i,]=cv2.imread(match)
             y[i]=int(label)
 
-            """
-            # Store sample
-            X[i,] = np.load('data/' + ID + '.npy')
-
-            # Store class
-            y[i] = self.labels[ID]
-            """
-
         return [X,K], keras.utils.to_categorical(y, num_classes=self.n_classes)
-    #Divide el conjunto de datos en entrenamiento y validacion
-    def splitGenerator(imglist,percent):
 
-        train = []
-        validation = []
-        validationPercent = (percent * int(len(imglist))) / 100
-        for i in range(1, int(validationPercent)):
-            index = random.randrange(int(len(imglist)))
-            aux = imglist[index]
-            if aux not in validation:
-                validation.append(aux)
-                imglist.pop(index)
-            else:
-                i = i - 1
-        train = imglist
-
-        return train, validation
