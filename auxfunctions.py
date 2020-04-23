@@ -6,7 +6,7 @@ import random
 from keras.preprocessing.image import img_to_array
 import csv
 import pickle
-
+#Obtiene el nombre y la extension de un archivo
 def splitfilename(filename):
     sname=""
     sext=""
@@ -74,7 +74,7 @@ def getTrainValidationSplits():
 
 
 #Obtenemos media y desviacion tipica de las imagenes
-def getMeanStd(path):
+def calculateMeanStd(path):
 
     train_mean = np.zeros((1,1,3))
     train_std = np.zeros((1,1,3))
@@ -95,9 +95,23 @@ def getMeanStd(path):
     train_mean = train_mean / n
     train_std = train_std / n
 
-    print('MEAN RGB:')
+    with open('mean.pickle', 'wb') as file:
+        pickle.dump(train_mean, file, pickle.HIGHEST_PROTOCOL)
+
+    with open('std.pickle', 'wb') as file:
+        pickle.dump(train_std, file, pickle.HIGHEST_PROTOCOL)
+
+    print('MEAN RGB saved mean.pickle :')
     print(train_mean)
-    print('STD RGB:')
+    print('STD RGB saved std.pickle:')
     print(train_std)
 
-    return train_mean, train_std
+def getMeanStd():
+
+    with open('mean.pickle', 'rb') as file:
+        mean = pickle.load(file)
+
+    with open('std.pickle', 'rb') as file:
+        std = pickle.load(file)
+
+    return mean, std

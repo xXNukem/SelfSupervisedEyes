@@ -13,6 +13,7 @@ def menu():
     print("\t3 - Generate Dataset")
     print('\t4 - Resize JPG images')
     print('\t5 - Generate train/validation split')
+    print('\t6 - Calculate mean and STD')
     print("\t9 - Exit")
 
 
@@ -71,11 +72,17 @@ while True:
         input("Press any key to continue")
 
     elif option=='5':
-        print('This will split your dataset into train and validation sets and save into .csv files')
+        print('This will split your dataset into train and validation sets and save into .pickle files')
         datasetPath=input('Enter the path of your dataset ->')
         percent=int(input('Enter percentaje for validation -> '))
         imglist=auxfunctions.loadimgspath(datasetPath)
         auxfunctions.splitGenerator(imglist,percent)
+        input("Press any key to continue")
+
+    elif option=='6':
+        print('This will calculate mean and STD of a dataset and save into .pickle files')
+        datasetPath = input('Enter the path of your dataset ->')
+        auxfunctions.calculateMeanStd(datasetPath)
         input("Press any key to continue")
 
     elif option == "9":
