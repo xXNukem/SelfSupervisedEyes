@@ -241,7 +241,7 @@ def visualize_layer(model,
 if __name__ == '__main__':
     # the name of the layer we want to visualize
     # (see model definition at keras/applications/vgg16.py)
-    LAYER_NAME = 'conv2'
+    LAYER_NAME = 'conv1'
 
     model = tf.keras.models.load_model('./Model2.h5')
     branch = model.get_layer('model')

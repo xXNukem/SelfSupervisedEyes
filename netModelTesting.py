@@ -12,6 +12,7 @@ from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow.keras import regularizers
 import tensorflow.keras as k
 from keras.constraints import max_norm
+from keras import callbacks
 
 numClasses = 8
 dataset='./retinopatyDataset'
@@ -96,7 +97,21 @@ params = {'dim': (width,height),
           'shuffle': True,
           'normalize': True,
           'downsampling':True,
-          'downsamplingPercent':65}
+          'downsamplingPercent':80,
+          'dataAugmentation':True,
+          'transformParameters': {
+                                'Theta':40,
+                                'tx':30,
+                                'ty':-30,
+                                'shear':40,
+                                'zx':-1.5,
+                                'zy':1.5,
+                                'flip_horizontal':True,
+                                'flip_vertical':True,
+                                'channel_shift_intencity':1.50,
+                                #'brightness':0.50
+                                }
+            }
 
 training_generator=dataGenerator.DataGenerator(train,ID_List_train,**params)
 validation_generator=dataGenerator.DataGenerator(validation,ID_List_val,**params)
@@ -106,11 +121,14 @@ model.compile(loss='categorical_crossentropy',
             optimizer=optimizer,
             metrics=['acc'])
 
-
-model.fit_generator(generator=training_generator,
-                    validation_data=validation_generator,
-                    steps_per_epoch=1000,
-                    epochs=25)
+parada=callbacks.callbacks.EarlyStopping(monitor='val_acc',mode='max',verbose=1,restore_best_weights=True,patience=2)
+learningRate=callbacks.callbacks.ReduceLROnPlateau(monitor='val_acc', verbose=1, mode='max',factor=0.2, min_lr=1e-8,patience=2)
+for i in range(5):
+    model.fit_generator(generator=training_generator,
+                        validation_data=validation_generator,
+                        steps_per_epoch=1000,
+                        epochs=50,
+                        callbacks=[parada,learningRate])
 
 model.save('./Model2.h5')
 model.save_weights('./ModelWeights2.h5')
