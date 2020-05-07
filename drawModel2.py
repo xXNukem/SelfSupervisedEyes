@@ -243,7 +243,7 @@ if __name__ == '__main__':
     # (see model definition at keras/applications/vgg16.py)
     LAYER_NAME = 'conv1'
 
-    model = tf.keras.models.load_model('./Model2.h5')
+    model = tf.keras.models.load_model('./Model3.h5')
     branch = model.get_layer('model')
     branch.summary()
     branch.summary()

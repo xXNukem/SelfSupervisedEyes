@@ -13,7 +13,8 @@ def menu():
     print("\t3 - Generate Dataset")
     print('\t4 - Resize JPG images')
     print('\t5 - Generate train/validation split')
-    print('\t6 - Calculate mean and STD')
+    print('\t6 - Calculate mean and STD (Unsupervised)')
+    print('\t7 - Calculate mean and STD (Classification)')
     print("\t9 - Exit")
 
 
@@ -83,6 +84,12 @@ while True:
         print('This will calculate mean and STD of a dataset and save into .pickle files')
         datasetPath = input('Enter the path of your dataset ->')
         auxfunctions.calculateMeanStd(datasetPath)
+        input("Press any key to continue")
+
+    elif option=='7':
+        print('This will calculate mean and STD of a dataset and save into .pickle files')
+        datasetPath = input('Enter the path of your dataset ->')
+        auxfunctions.calculateMeanStdClassification(datasetPath)
         input("Press any key to continue")
 
     elif option == "9":
