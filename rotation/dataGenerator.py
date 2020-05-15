@@ -14,6 +14,7 @@ class DataGenerator(keras.utils.Sequence):
                  n_classes=10, shuffle=True, normalize=True,downsampling=True, dataAugmentation=True,downsamplingPercent=65,rgbToGray=True):
         'Initialization'
         self.dim = dim
+        self.imgList=imgList
         self.batch_size = batch_size
         self.list_IDs = list_IDs
         self.n_channels = n_channels
@@ -45,6 +46,13 @@ class DataGenerator(keras.utils.Sequence):
 
         return X, y
 
+    def getClasses(self):
+        classes=[]
+        for i in range(0,len(self.imgList)):
+            img,label=self.imgList[i]
+            classes.append(int(label))
+        return classes,len(classes)
+
     def on_epoch_end(self):
         'Updates indexes after each epoch'
         self.indexes = np.arange(len(self.list_IDs))
@@ -70,7 +78,7 @@ class DataGenerator(keras.utils.Sequence):
                 cv2.normalize(transformedImg, transformedImg, 0, 255, cv2.NORM_MINMAX)
             #Data augmentation
             if self.dataAugmentation == True:
-                activation=random.randint(0,10)
+                activation=random.randint(2,10)
                 if activation > 1:
                     transform = self.datagen.get_random_transform(self.dim, seed=random.seed(5))
                     transformedImg=self.datagen.apply_transform(transformedImg,transform)

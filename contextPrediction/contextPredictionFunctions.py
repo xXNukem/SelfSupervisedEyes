@@ -84,10 +84,16 @@ class contextPrediction:
         train_mean = train_mean / n
         train_std = train_std / n
 
-        with open('../contextPrediction/mean.pickle', 'wb') as file:
+        with open('../contextPrediction/ContextPredictionMean.pickle', 'wb') as file:
             pickle.dump(train_mean, file, pickle.HIGHEST_PROTOCOL)
 
-        with open('../contextPrediction/std.pickle', 'wb') as file:
+        with open('../contextPrediction/ContextPredictionStd.pickle', 'wb') as file:
+            pickle.dump(train_std, file, pickle.HIGHEST_PROTOCOL)
+
+        with open('../classification/ContextPredictionMean.pickle', 'wb') as file:
+            pickle.dump(train_mean, file, pickle.HIGHEST_PROTOCOL)
+
+        with open('../classification/ContextPredictionStd.pickle', 'wb') as file:
             pickle.dump(train_std, file, pickle.HIGHEST_PROTOCOL)
 
         print('MEAN RGB saved mean.pickle :')
@@ -97,10 +103,11 @@ class contextPrediction:
 
     def getMeanStd(self):
 
-        with open('mean.pickle', 'rb') as file:
+        with open('ContextPredictionMean.pickle', 'rb') as file:
             mean = pickle.load(file)
 
-        with open('std.pickle', 'rb') as file:
+
+        with open('ContextPredictionStd.pickle', 'rb') as file:
             std = pickle.load(file)
 
         return mean, std

@@ -3,11 +3,12 @@ import importlib.util
 spec = importlib.util.spec_from_file_location("imgTools.py", "../main/imgTools.py")
 imgTools = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(imgTools)
-
 import tensorflow.keras as keras
 import cv2
 import random
 import numpy as np
+import contextPredictionFunctions
+
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
     def __init__(self, imgList, list_IDs,datagen,batch_size=32, dim=(32,32,32), n_channels=1,
@@ -59,12 +60,12 @@ class DataGenerator(keras.utils.Sequence):
         y = np.empty((self.batch_size), dtype=int)
 
         #Obtener media y desviacion tipica del fichero
-
+        functions=contextPredictionFunctions.contextPrediction()
+        mean,std=functions.getMeanStd()
         resizer=imgTools.imgTools() #objeto de la clase readIMG para resizar las imagenes
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             center,match,label=self.all_samples[ID]
-            #mean, std = auxfunctions.getMeanStd()
             transformedC=cv2.imread(center)
             transformedM=cv2.imread(match)
             #Normalizar imagenes
@@ -116,7 +117,7 @@ class DataGenerator(keras.utils.Sequence):
                         transformedC = resizer.image_resize(transformedC, width, height)
             # Pasar aleatoriamente a escala de grises
             if self.rgbToGray == True:
-                activation = random.randint(0,10)
+                activation = random.randint(-5,10)
                 if activation > 1:
                     apply = random.randint(0,16)
                     if apply <= 5:
@@ -131,6 +132,12 @@ class DataGenerator(keras.utils.Sequence):
                         transformedC = cv2.cvtColor(transformedC, cv2.COLOR_BGR2GRAY)
                         transformedC = cv2.cvtColor(transformedC, cv2.COLOR_GRAY2RGB)
 
+
+            #aplicar media y std al terminar
+            transformedM=transformedM-mean
+            transformedM=transformedM/std
+            transformedC=transformedC-mean
+            transformedC=transformedC/std
 
             X[i,] = transformedC
             K[i,] = transformedM

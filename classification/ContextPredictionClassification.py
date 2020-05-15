@@ -5,13 +5,8 @@ import random
 from keras.datasets import mnist
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Input, Flatten, Dense, Dropout, Lambda, Conv2D,MaxPooling2D, Concatenate, BatchNormalization
-from keras.optimizers import RMSprop
-import dataGenerator
-import auxfunctions
-from tensorflow.python.keras.utils.data_utils import Sequence
 from tensorflow.keras import regularizers
 import tensorflow.keras as k
-from keras.constraints import max_norm
 from keras import callbacks
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import pandas
@@ -19,9 +14,9 @@ from keras.callbacks import TensorBoard
 import datetime
 from sklearn.utils import class_weight
 import numpy as np
-
+import classificationFunctions
 #------------------------------------------------------------
-trainLabels = pandas.read_csv("./trainLabels.csv", dtype=str)
+trainLabels = pandas.read_csv("../data/trainLabels.csv", dtype=str)
 
 #Hay que añadir la extension a la lista de imagenes
 def append_ext(fn):
@@ -31,23 +26,16 @@ trainLabels["image"]=trainLabels["image"].apply(append_ext)
 #test_data["id_code"]=test_data["id_code"].apply(append_ext)
 
 datagen = ImageDataGenerator(
-    rescale=1.0/255.0,
-    zoom_range=[-2, 2],
-    width_shift_range=[-25, 25],
-    height_shift_range=[-25, 25],
-    rotation_range=40,
-    shear_range=40,
-    horizontal_flip=True,
-    vertical_flip=True,
-    brightness_range=[0.98,1.05],
-    featurewise_center=True,
+    zoom_range=[-0.5, 0.5],
+    width_shift_range=[-5, 5],
+    height_shift_range=[-5, 5],
+    rotation_range=5,
+    shear_range=5,
     samplewise_center=True,
-    # channel_shift_range=1.5,
-    #featurewise_center=True,
-    #featurewise_std_normalization=True,
+    samplewise_std_normalization=True,
     validation_split=0.25)
-
-mean,std=auxfunctions.getMeanStdClassification()
+functions=classificationFunctions.classification()
+mean,std=functions.getContextPredictionMeanStd()
 datagen.mean=mean
 datagen.std=std
 
@@ -58,7 +46,7 @@ input_shape=(width,height,3)
 
 train_generator = datagen.flow_from_dataframe(
         dataframe=trainLabels,
-        directory='./resized_train_cropped',
+        directory='../data/resized_train_cropped',
         x_col="image",
         y_col="level",
         target_size=(240,240),
@@ -70,7 +58,7 @@ train_generator = datagen.flow_from_dataframe(
 
 validation_generator =datagen.flow_from_dataframe(
         dataframe=trainLabels,
-        directory='./resized_train_cropped',
+        directory='../data/resized_train_cropped',
         x_col="image",
         y_col="level",
         target_size=(240,240),
@@ -79,7 +67,7 @@ validation_generator =datagen.flow_from_dataframe(
         color_mode='rgb',
         shuffle=True,
         subset='validation')
-
+print(validation_generator.classes)
 #----------------------------------------------------------------------------------------
 
 def createBaseNetwork(input_shape):
@@ -110,11 +98,13 @@ def createBaseNetwork(input_shape):
 
 # ---------------------------------------------------------------------------------
 baseNetwork=createBaseNetwork(input_shape)
+baseNetwork.load_weights('./contextPredictionModelWeights.h5',by_name=True)
 
 for l in baseNetwork.layers:
     l._trainable=False
 
-baseNetwork.load_weights('./ModelWeights7.h5',by_name=True)
+for layer in baseNetwork.layers:
+	print("{}: {}".format(layer, layer.trainable))
 
 input_a = Input(shape=input_shape,name='input1')
 outLayers = baseNetwork(input_a)
@@ -130,11 +120,6 @@ classifier = Dense(numClasses, activation='softmax', name='predictions')(outLaye
 
 model = Model(input_a, classifier)
 model.summary()
-
-
-for layer in baseNetwork.layers:
-	print("{}: {}".format(layer, layer.trainable))
-
 
 optimizer=k.optimizers.Adagrad(learning_rate=1e-3)
 model.compile(loss='categorical_crossentropy',
@@ -160,7 +145,11 @@ model.fit_generator(generator=train_generator,
                             callbacks=[tensorboard_callback]
                             )
 
+#---------------------------------------------------
 """
+for l in baseNetwork.layers:
+    l._trainable=True
+
 train_generator.reset()
 validation_generator.reset()
 

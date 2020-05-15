@@ -42,12 +42,32 @@ class classification:
         print('STD RGB saved stdClassification.pickle:')
         print(train_std)
 
-    def getMeanStdClassification(self):
+    def getContextPredictionMeanStd(self):
 
-        with open('meanClassification.pickle', 'rb') as file:
+        with open('contextPredictionMean.pickle', 'rb') as file:
             mean = pickle.load(file)
 
-        with open('stdClassification.pickle', 'rb') as file:
+        with open('contextPredictionStd.pickle', 'rb') as file:
+            std = pickle.load(file)
+
+        return mean, std
+
+    def getJiggsawMeanStd(self):
+
+        with open('jiggsawMean.pickle', 'rb') as file:
+            mean = pickle.load(file)
+
+        with open('jiggsawStd.pickle', 'rb') as file:
+            std = pickle.load(file)
+
+        return mean, std
+
+    def getRotationMeanStd(self):
+
+        with open('rotationMean.pickle', 'rb') as file:
+            mean = pickle.load(file)
+
+        with open('rotationStd.pickle', 'rb') as file:
             std = pickle.load(file)
 
         return mean, std

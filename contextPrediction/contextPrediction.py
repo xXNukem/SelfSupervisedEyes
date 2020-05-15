@@ -31,14 +31,14 @@ for i in range(0,len(validation)):
     ID_List_val.append((int(i)))
 
 
-datagen = ImageDataGenerator(#rescale=1./255.0,
-                            zoom_range=[-2, 2],
-                             width_shift_range=[-25, 25],
-                             height_shift_range=[-25, 25],
-                             rotation_range=40,
-                             shear_range=40,
-                             horizontal_flip=True,
-                             vertical_flip=True,
+datagen = ImageDataGenerator(
+                            zoom_range=[-1.5, 1.5],
+                             width_shift_range=[-1.5, 1.5],
+                             height_shift_range=[-1.5, 1.5],
+                             rotation_range=2,
+                             shear_range=2,
+                             horizontal_flip=False,
+                             vertical_flip=False,
                              #brightness_range=[0.98,1.05],
                              # channel_shift_range=1.5
                              )
@@ -62,13 +62,13 @@ training_generator=dataGenerator.DataGenerator(train,ID_List_train,**params)
 validation_generator=dataGenerator.DataGenerator(validation,ID_List_val,**params)
 
 
-optimizer=k.optimizers.Adam(learning_rate=1e-5)
+optimizer=k.optimizers.Adam(learning_rate=1e-4)
 model.compile(loss='categorical_crossentropy',
             optimizer=optimizer,
             metrics=['acc'])
 
-parada=callbacks.callbacks.EarlyStopping(monitor='val_acc',mode='max',verbose=1,restore_best_weights=False,patience=7)
-learningRate=callbacks.callbacks.ReduceLROnPlateau(monitor='val_acc', verbose=1, mode='max',factor=0.2, min_lr=1e-8,patience=7)
+parada=callbacks.callbacks.EarlyStopping(monitor='val_acc',mode='max',verbose=1,restore_best_weights=True,patience=3)
+learningRate=callbacks.callbacks.ReduceLROnPlateau(monitor='val_acc', verbose=1, mode='max',factor=0.2, min_lr=1e-8,patience=3)
 
 
 model.fit_generator(generator=training_generator,
@@ -79,5 +79,5 @@ model.fit_generator(generator=training_generator,
                         callbacks=[parada,learningRate]
                          )
 
-model.save('./Model3.h5')
-model.save_weights('./ModelWeights3.h5')
+model.save('./contextPredictionModel.h5')
+model.save_weights('./contextPredictionModelWeights.h5')

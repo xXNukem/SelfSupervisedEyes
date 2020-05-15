@@ -37,20 +37,27 @@ class imgTools:
         # return the resized image
         return resized
 
-    def resizeJPGfolder(self,path,width,height,destination):
+    def resizeJPGfolder(self,path,width,height,destination,r):
 
         imgs=os.listdir(path)
 
         if os.path.exists(destination)==False:
             os.mkdir(destination)
 
-        for i in imgs:
-            print(i)
-            original=cv2.imread(path+'/'+i)
-            name,ext=auxfunctions.splitfilename(i)
-            resized=self.image_resize(original, width=width, height=height)
-            cv2.imwrite(destination+'/'+name+'.jpg', resized)
-
+        if r=='1':
+            for i in imgs:
+                print(i)
+                original=cv2.imread(path+'/'+i)
+                name,ext=auxfunctions.splitfilename(i)
+                resized=self.image_resize(original, width=width, height=height)
+                cv2.imwrite(destination+'/'+name+'.jpg', resized)
+        else:
+            for i in imgs:
+                print(i)
+                original=cv2.imread(path+'/'+i)
+                name,ext=auxfunctions.splitfilename(i)
+                resized = cv2.resize(original, (width,height), interpolation=cv2.INTER_AREA)
+                cv2.imwrite(destination + '/' + name + '.jpg', resized)
 
     def rotate(self,img,angle):
 

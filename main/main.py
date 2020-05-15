@@ -12,6 +12,9 @@ spec.loader.exec_module(classification)
 spec = importlib.util.spec_from_file_location("rotationFunctions.py", "../rotation/rotationFunctions.py")
 rotation = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(rotation)
+spec = importlib.util.spec_from_file_location("jiggsawFunctions.py", "../jiggsaw/jiggsawFunctions.py")
+jiggsaw = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(jiggsaw)
 #------------------------------------------------------------------------------------------------
 
 
@@ -24,15 +27,16 @@ def menu():
     print('\t2 - Calculate mean and STD for Classification')
     print('Context Prediction Method -------------------------')
     print("\t3 - Generate Dataset")
-    print('\t4 - Generate train/validation split')
+    print('\t4 - Generate train/validation split for Context Prediction')
     print('\t5 - Calculate mean and STD for Context Prediction')
     print('Rotation Method------------------------------------')
     print('\t6 - Generate Dataset')
-    print('\t7 - Generate train/validation split')
-    print('\t8 - Calculate mean and STD for Rotation')
+    print('\t7 - Calculate mean and STD for Rotation')
     print('Jiggsaw Permutation method-------------------------')
-
-    print("\t9 - Exit")
+    print('\t8 - Generate Dataset')
+    print('\t9 - Generate train/validation split for JiggSaw')
+    print('\t10 - Calculate mean and STD for Context Prediction')
+    print("11 - Exit")
 
 
 while True:
@@ -44,7 +48,7 @@ while True:
     imgTools = imgTools.imgTools()
     contextPrediction=contextPrediction.contextPrediction()
     rotation=rotation.rotation()
-
+    jiggsaw=jiggsaw.jiggsaw()
     classification=classification.classification()
 
     if option == '1':
@@ -52,8 +56,9 @@ while True:
         imgPath=input('Enter IMG path -> ')
         width=int(input('Enter width -> '))
         height=int(input('Enter height -> '))
+        r=input('Preserve aspect ratio? 1-Yes Any key-No -> ')
         destination=input('Enter the name of the destination folder -> ')
-        imgTools.resizeJPGfolder(imgPath,width,height,destination)
+        imgTools.resizeJPGfolder(imgPath,width,height,destination,r)
         input("Press any key to continue")
 
     elif option=='2':
@@ -95,21 +100,36 @@ while True:
         input("Press any key to continue")
 
     elif option=='7':
-        print('This will split your dataset into train and validation sets and save into .pickle files')
-        datasetPath=input('Enter the path of your dataset -> ')
-        percent=int(input('Enter percentaje for validation -> '))
-        imglist=rotation.loadimgspath(datasetPath)
-        rotation.splitGenerator(imglist,percent)
-        input("Press any key to continue")
-
-    elif option=='8':
         print('This will calculate mean and STD of a dataset for Rotation Method and save into .pickle files')
         datasetPath = input('Enter the path of your dataset ->')
         rotation.calculateMeanStd(datasetPath)
         input("Press any key to continue")
 
+    elif option == "8":
+        print("This will generate the Dataset")
+        imgPath=input('Enter IMG Path -> ')
+        sqSize=int(input('Enter the square size -> '))
+        pathname=input('Enter a name for the folder wich will contain the dataset -> ')
+        jiggsaw.generateDataset(imgPath,sqSize,pathname)
+        input("Press any key to continue")
 
-    elif option == "9":
+    elif option=='9':
+        print('This will split your dataset into train and validation sets and save into .pickle files')
+        datasetPath=input('Enter the path of your dataset -> ')
+        maxDist=int(input('Enter the maximum Hamming Distance (equal to nº Classes) -> '))
+        percent = int(input('Enter percentaje for validation -> '))
+        imglist=jiggsaw.loadimgspath(datasetPath,maxDist)
+        jiggsaw.splitGenerator(imglist,percent)
+        input("Press any key to continue")
+
+    elif option=='10':
+        print('This will calculate mean and STD of a dataset for Rotation Method and save into .pickle files')
+        datasetPath = input('Enter the path of your dataset ->')
+        jiggsaw.calculateMeanStd(datasetPath)
+        input("Press any key to continue")
+
+
+    elif option == "11":
         break
     else:
         print("")
