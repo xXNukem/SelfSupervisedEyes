@@ -183,14 +183,14 @@ class DataGenerator(keras.utils.Sequence):
 
 
             #aplicar media y std al terminar
-            #transformed1 = transformed1 - mean
-            #transformed1 = transformed1 / std
-            #transformed2 = transformed2 - mean
-            #transformed2 = transformed2 / std
-            #transformed3 = transformed3 - mean
-            #transformed3 = transformed3 / std
-            #transformed4 = transformed4 - mean
-            #transformed4 = transformed4 / std
+            transformed1 = transformed1 - mean
+            transformed1 = transformed1 / std
+            transformed2 = transformed2 - mean
+            transformed2 = transformed2 / std
+            transformed3 = transformed3 - mean
+            transformed3 = transformed3 / std
+            transformed4 = transformed4 - mean
+            transformed4 = transformed4 / std
 
 
             X[i,] = transformed1
