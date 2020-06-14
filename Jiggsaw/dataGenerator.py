@@ -1,6 +1,5 @@
 import importlib.util
-
-spec = importlib.util.spec_from_file_location("imgTools.py", "../main/imgTools.py")
+spec = importlib.util.spec_from_file_location("imgTools.py", "../DatasetCreation/imgTools.py")
 imgTools = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(imgTools)
 import tensorflow.keras as keras
@@ -61,11 +60,8 @@ class DataGenerator(keras.utils.Sequence):
         K = np.empty((self.batch_size, *self.dim, self.n_channels))
         y = np.empty((self.batch_size), dtype=int)
 
-        #Obtener media y desviacion tipica del fichero
-        functions=jiggsawFunctions.jiggsaw()
-        mean,std=functions.getMeanStd()
-        resizer=imgTools.imgTools() #objeto de la clase readIMG para resizar las imagenes
-        # Generate data
+        resizer=imgTools.imgTools() #get resizer
+
         for i, ID in enumerate(list_IDs_temp):
             img1,img2,img3,img4,label=self.all_samples[ID]
             transformed1 = cv2.imread(img1)
@@ -73,7 +69,7 @@ class DataGenerator(keras.utils.Sequence):
             transformed3 = cv2.imread(img3)
             transformed4 = cv2.imread(img4)
 
-            #Normalizar imagenes
+            #Normalize imgs
             if self.normalize == True:
                 cv2.normalize(transformed1, transformed1, 0, 255, cv2.NORM_MINMAX)
                 cv2.normalize(transformed2, transformed2, 0, 255, cv2.NORM_MINMAX)
@@ -81,28 +77,41 @@ class DataGenerator(keras.utils.Sequence):
                 cv2.normalize(transformed4, transformed4, 0, 255, cv2.NORM_MINMAX)
             #Data augmentation
             if self.dataAugmentation == True:
-                activation=random.randint(0,10)
+                activation=random.randint(2,10)
                 if activation > 1:
                     apply = random.randint(1,25)
-                    transform = self.datagen.get_random_transform(self.dim, seed=random.seed(5))
+                    transform = self.datagen.get_random_transform(self.dim,
+                                                                  seed=random.seed(5))
                     if apply <= 5:
-                        transformed1=self.datagen.apply_transform(transformed1,transform)
+                        transformed1=self.datagen.apply_transform(transformed1,
+                                                                  transform)
                     if apply >= 5 and apply <=10:
-                        transformed2 = self.datagen.apply_transform(transformed2, transform)
+                        transformed2 = self.datagen.apply_transform(transformed2,
+                                                                    transform)
                     if apply >= 10 and apply <= 15:
-                        transformed3 = self.datagen.apply_transform(transformed3, transform)
+                        transformed3 = self.datagen.apply_transform(transformed3,
+                                                                    transform)
                     if apply >=15 and apply <=20:
-                        transformed4 = self.datagen.apply_transform(transformed4, transform)
+                        transformed4 = self.datagen.apply_transform(transformed4,
+                                                                    transform)
                     if apply >=20:
-                        transform = self.datagen.get_random_transform(self.dim, seed=random.seed(5))
-                        transformed1 = self.datagen.apply_transform(transformed1, transform)
-                        transform = self.datagen.get_random_transform(self.dim, seed=random.seed(5))
-                        transformed2 = self.datagen.apply_transform(transformed2, transform)
-                        transform = self.datagen.get_random_transform(self.dim, seed=random.seed(5))
-                        transformed3 = self.datagen.apply_transform(transformed3, transform)
-                        transform = self.datagen.get_random_transform(self.dim, seed=random.seed(5))
-                        transformed4 = self.datagen.apply_transform(transformed4, transform)
-            #Realizar downsampling y upsampling a la pareja
+                        transform = self.datagen.get_random_transform(self.dim,
+                                                                      seed=random.seed(5))
+                        transformed1 = self.datagen.apply_transform(transformed1,
+                                                                    transform)
+                        transform = self.datagen.get_random_transform(self.dim,
+                                                                      seed=random.seed(5))
+                        transformed2 = self.datagen.apply_transform(transformed2,
+                                                                    transform)
+                        transform = self.datagen.get_random_transform(self.dim,
+                                                                      seed=random.seed(5))
+                        transformed3 = self.datagen.apply_transform(transformed3,
+                                                                    transform)
+                        transform = self.datagen.get_random_transform(self.dim,
+                                                                      seed=random.seed(5))
+                        transformed4 = self.datagen.apply_transform(transformed4,
+                                                                    transform)
+            #Random upsampling and downsampling to some patches
             if self.downsampling == True:
                 assert self.downsamplingPercent>1 and self.downsamplingPercent<100
                 width,height=self.dim
@@ -113,50 +122,78 @@ class DataGenerator(keras.utils.Sequence):
                     apply = random.randint(1,25)
                     if apply <= 5:
                         #downsampling
-                        transformed1=resizer.image_resize(transformed1,int(width-downsamplingWidth),int(height-downsamplingHeight))
+                        transformed1=resizer.image_resize(transformed1,
+                                                          int(width-downsamplingWidth),
+                                                          int(height-downsamplingHeight))
                         #upsampling
-                        transformed1 = resizer.image_resize(transformed1, width, height)
+                        transformed1 = resizer.image_resize(transformed1,
+                                                            width,
+                                                            height)
                     if apply >= 5 and apply <= 10:
                         # downsampling
-                        transformed2 = resizer.image_resize(transformed2, int(width - downsamplingWidth),int(height - downsamplingHeight))
+                        transformed2 = resizer.image_resize(transformed2,
+                                                            int(width - downsamplingWidth),
+                                                            int(height - downsamplingHeight))
                         # upsampling
-                        transformed2 = resizer.image_resize(transformed2, width, height)
+                        transformed2 = resizer.image_resize(transformed2,
+                                                            width,
+                                                            height)
                     if apply >= 10 and apply <=15:
                         # downsampling
-                        transformed3 = resizer.image_resize(transformed3, int(width - downsamplingWidth),int(height - downsamplingHeight))
+                        transformed3 = resizer.image_resize(transformed3,
+                                                            int(width - downsamplingWidth),
+                                                            int(height - downsamplingHeight))
                         # upsampling
-                        transformed3 = resizer.image_resize(transformed3, width, height)
+                        transformed3 = resizer.image_resize(transformed3,
+                                                            width,
+                                                            height)
                     if apply >= 15 and apply <=20:
                         # downsampling
-                        transformed4 = resizer.image_resize(transformed4, int(width - downsamplingWidth),int(height - downsamplingHeight))
+                        transformed4 = resizer.image_resize(transformed4,
+                                                            int(width - downsamplingWidth),
+                                                            int(height - downsamplingHeight))
                         # upsampling
-                        transformed4 = resizer.image_resize(transformed4, width, height)
+                        transformed4 = resizer.image_resize(transformed4,
+                                                            width,
+                                                            height)
                     if apply >=20:
 
                         # downsampling
-                        transformed1 = resizer.image_resize(transformed1, int(width - downsamplingWidth),
+                        transformed1 = resizer.image_resize(transformed1,
+                                                            int(width - downsamplingWidth),
                                                             int(height - downsamplingHeight))
                         # upsampling
-                        transformed1 = resizer.image_resize(transformed1, width, height)
+                        transformed1 = resizer.image_resize(transformed1,
+                                                            width,
+                                                            height)
                         # downsampling
-                        transformed2 = resizer.image_resize(transformed2, int(width - downsamplingWidth),
+                        transformed2 = resizer.image_resize(transformed2,
+                                                            int(width - downsamplingWidth),
                                                             int(height - downsamplingHeight))
                         # upsampling
-                        transformed2 = resizer.image_resize(transformed2, width, height)
+                        transformed2 = resizer.image_resize(transformed2,
+                                                            width,
+                                                            height)
                         # downsampling
-                        transformed3 = resizer.image_resize(transformed3, int(width - downsamplingWidth),
+                        transformed3 = resizer.image_resize(transformed3,
+                                                            int(width - downsamplingWidth),
                                                             int(height - downsamplingHeight))
                         # upsampling
-                        transformed3 = resizer.image_resize(transformed3, width, height)
+                        transformed3 = resizer.image_resize(transformed3,
+                                                            width,
+                                                            height)
                         # downsampling
-                        transformed4 = resizer.image_resize(transformed4, int(width - downsamplingWidth),
+                        transformed4 = resizer.image_resize(transformed4,
+                                                            int(width - downsamplingWidth),
                                                             int(height - downsamplingHeight))
                         # upsampling
-                        transformed4 = resizer.image_resize(transformed4, width, height)
+                        transformed4 = resizer.image_resize(transformed4,
+                                                            width,
+                                                            height)
 
-            # Pasar aleatoriamente a escala de grises
+            # random to grayscale
             if self.rgbToGray == True:
-                activation = random.randint(-5,10)
+                activation = random.randint(0,10)
                 if activation > 1:
                     apply = random.randint(1,25)
                     if apply <= 5:
@@ -182,17 +219,6 @@ class DataGenerator(keras.utils.Sequence):
                         transformed4 = cv2.cvtColor(transformed4, cv2.COLOR_GRAY2RGB)
 
 
-            #aplicar media y std al terminar
-            transformed1 = transformed1 - mean
-            transformed1 = transformed1 / std
-            transformed2 = transformed2 - mean
-            transformed2 = transformed2 / std
-            transformed3 = transformed3 - mean
-            transformed3 = transformed3 / std
-            transformed4 = transformed4 - mean
-            transformed4 = transformed4 / std
-
-
             X[i,] = transformed1
             Y[i,] = transformed2
             Z[i,] = transformed3
@@ -200,53 +226,3 @@ class DataGenerator(keras.utils.Sequence):
             y[i]=int(label)
 
         return [X,Y,Z,K], keras.utils.to_categorical(y, num_classes=self.n_classes)
-
-
-"""
-datagen = ImageDataGenerator(#rescale=1.0/255,
-                            #zoom_range=[-2, 2],
-                             #width_shift_range=[-25, 25],
-                             #height_shift_range=[-25, 25],
-                             #rotation_range=40,
-                             #shear_range=40,
-                             #horizontal_flip=True,
-                             #vertical_flip=True,
-                             brightness_range=[0.98,1.05],
-                             #featurewise_center=True,
-                             #samplewise_center=True,
-                             channel_shift_range=0.95
-                             )
-
-
-params = {'dim': (96,96),
-          'batch_size':2,
-          'n_classes': 8,
-          'n_channels': 3,
-          'shuffle': True,
-          'normalize': True,
-          'downsampling':True,
-          'downsamplingPercent':80,
-          'dataAugmentation':True,
-            'rgbToGray':False,
-          'datagen':datagen
-            }
-
-obj=DataGenerator([('./drRafael2/img_0/c.jpg','./drRafael2/img_0/1.jpg','1'),
-                   ('./drRafael2/img_0/c.jpg','./drRafael2/img_0/3.jpg','3'),
-                   ('./drRafael2/img_0/c.jpg','./drRafael2/img_0/4.jpg','4'),
-                   ('./drRafael2/img_0/c.jpg','./drRafael2/img_0/6.jpg','6')],[0,1,2,3],**params)
-
-x,y=obj.__getitem__(1)
-
-transform =datagen.get_random_transform((96,96), seed=random.seed(5))
-transform['brightness']=0.999
-#transform['channel_shift_intensity']=5
-img=cv2.imread('./drRafael2/img_0/c.jpg')
-#img=img/255.0
-cv2.imshow('sdf',img)
-img2=datagen.apply_transform(img,transform)
-#img2=img2/255.0
-cv2.imshow('dfa',img2)
-
-cv2.waitKey()
-"""

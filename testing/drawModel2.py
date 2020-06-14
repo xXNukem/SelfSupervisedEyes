@@ -241,10 +241,10 @@ def visualize_layer(model,
 if __name__ == '__main__':
     # the name of the layer we want to visualize
     # (see model definition at keras/applications/vgg16.py)
-    LAYER_NAME = 'conv1'
+    LAYER_NAME = 'block1_conv3'
 
     model = tf.keras.models.load_model('./contextPredictionModel.h5')
-    branch = model.get_layer('model')
+    branch = model.get_layer('vgg16')
     branch.summary()
 
     # example function call

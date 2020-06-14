@@ -1,18 +1,19 @@
 import importlib.util
-
-spec = importlib.util.spec_from_file_location("imgTools.py", "../main/imgTools.py")
+spec = importlib.util.spec_from_file_location("imgTools.py", "../DatasetCreation/imgTools.py")
 imgTools = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(imgTools)
 import tensorflow.keras as keras
 import cv2
 import random
 import numpy as np
-import contextPredictionFunctions
 
+
+#params inicialization
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
     def __init__(self, imgList, list_IDs,datagen,batch_size=32, dim=(32,32,32), n_channels=1,
-                 n_classes=10, shuffle=True, normalize=True,downsampling=True, dataAugmentation=True,downsamplingPercent=65,rgbToGray=True):
+                 n_classes=10, shuffle=True, normalize=True,downsampling=True, dataAugmentation=True,
+                 downsamplingPercent=65,rgbToGray=True):
         'Initialization'
         self.dim = dim
         self.batch_size = batch_size
@@ -59,16 +60,13 @@ class DataGenerator(keras.utils.Sequence):
         K = np.empty((self.batch_size, *self.dim, self.n_channels))
         y = np.empty((self.batch_size), dtype=int)
 
-        #Obtener media y desviacion tipica del fichero
-        functions=contextPredictionFunctions.contextPrediction()
-        mean,std=functions.getMeanStd()
-        resizer=imgTools.imgTools() #objeto de la clase readIMG para resizar las imagenes
+        resizer=imgTools.imgTools() #Get resizer
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             center,match,label=self.all_samples[ID]
             transformedC=cv2.imread(center)
             transformedM=cv2.imread(match)
-            #Normalizar imagenes
+            #Normalize input imgs
             if self.normalize == True:
                 cv2.normalize(transformedC, transformedC, 0, 255, cv2.NORM_MINMAX)
                 cv2.normalize(transformedM, transformedM, 0, 255, cv2.NORM_MINMAX)
@@ -77,17 +75,24 @@ class DataGenerator(keras.utils.Sequence):
                 activation=random.randint(0,10)
                 if activation > 1:
                     apply = random.randint(0,16)
-                    transform = self.datagen.get_random_transform(self.dim, seed=random.seed(5))
+                    transform = self.datagen.get_random_transform(self.dim,
+                                                                  seed=random.seed(5))
                     if apply <= 5:
-                        transformedC=self.datagen.apply_transform(transformedC,transform)
+                        transformedC=self.datagen.apply_transform(transformedC,
+                                                                  transform)
                     if apply >= 5 and apply <=11:
-                        transformedM = self.datagen.apply_transform(transformedM, transform)
+                        transformedM = self.datagen.apply_transform(transformedM,
+                                                                    transform)
                     if apply >= 10:
-                        transform = self.datagen.get_random_transform(self.dim, seed=random.seed(5))
-                        transformedC = self.datagen.apply_transform(transformedC, transform)
-                        transform = self.datagen.get_random_transform(self.dim, seed=random.seed(5))
-                        transformedM = self.datagen.apply_transform(transformedM, transform)
-            #Realizar downsampling y upsampling a la pareja
+                        transform = self.datagen.get_random_transform(self.dim,
+                                                                      seed=random.seed(5))
+                        transformedC = self.datagen.apply_transform(transformedC,
+                                                                    transform)
+                        transform = self.datagen.get_random_transform(self.dim,
+                                                                      seed=random.seed(5))
+                        transformedM = self.datagen.apply_transform(transformedM,
+                                                                    transform)
+            #Downsampling and upsamplig
             if self.downsampling == True:
                 assert self.downsamplingPercent>1 and self.downsamplingPercent<100
                 width,height=self.dim
@@ -98,26 +103,34 @@ class DataGenerator(keras.utils.Sequence):
                     apply = random.randint(0,16)
                     if apply <= 5:
                         #downsampling
-                        transformedC=resizer.image_resize(transformedC,int(width-downsamplingWidth),int(height-downsamplingHeight))
+                        transformedC=resizer.image_resize(transformedC,
+                                                          int(width-downsamplingWidth),
+                                                          int(height-downsamplingHeight))
                         #upsampling
                         transformedC = resizer.image_resize(transformedC, width, height)
                     if apply >= 5 and apply <= 11:
                         # downsampling
-                        transformedM = resizer.image_resize(transformedM, int(width - downsamplingWidth),int(height - downsamplingHeight))
+                        transformedM = resizer.image_resize(transformedM,
+                                                            int(width - downsamplingWidth),
+                                                            int(height - downsamplingHeight))
                         # upsampling
                         transformedM = resizer.image_resize(transformedM, width, height)
                     if apply >= 10:
                         # downsampling
-                        transformedM = resizer.image_resize(transformedM, int(width - downsamplingWidth),int(height - downsamplingHeight))
+                        transformedM = resizer.image_resize(transformedM,
+                                                            int(width - downsamplingWidth),
+                                                            int(height - downsamplingHeight))
                         # upsampling
                         transformedM = resizer.image_resize(transformedM, width, height)
                         # downsampling
-                        transformedC = resizer.image_resize(transformedC, int(width - downsamplingWidth),int(height - downsamplingHeight))
+                        transformedC = resizer.image_resize(transformedC,
+                                                            int(width - downsamplingWidth),
+                                                            int(height - downsamplingHeight))
                         # upsampling
                         transformedC = resizer.image_resize(transformedC, width, height)
-            # Pasar aleatoriamente a escala de grises
+            # random rgb2gray
             if self.rgbToGray == True:
-                activation = random.randint(-5,10)
+                activation = random.randint(0,10)
                 if activation > 1:
                     apply = random.randint(0,16)
                     if apply <= 5:
@@ -133,64 +146,8 @@ class DataGenerator(keras.utils.Sequence):
                         transformedC = cv2.cvtColor(transformedC, cv2.COLOR_GRAY2RGB)
 
 
-            #aplicar media y std al terminar
-            transformedM=transformedM-mean
-            transformedM=transformedM/std
-            transformedC=transformedC-mean
-            transformedC=transformedC/std
-
             X[i,] = transformedC
             K[i,] = transformedM
             y[i]=int(label)
 
         return [X,K], keras.utils.to_categorical(y, num_classes=self.n_classes)
-
-
-"""
-datagen = ImageDataGenerator(#rescale=1.0/255,
-                            #zoom_range=[-2, 2],
-                             #width_shift_range=[-25, 25],
-                             #height_shift_range=[-25, 25],
-                             #rotation_range=40,
-                             #shear_range=40,
-                             #horizontal_flip=True,
-                             #vertical_flip=True,
-                             brightness_range=[0.98,1.05],
-                             #featurewise_center=True,
-                             #samplewise_center=True,
-                             channel_shift_range=0.95
-                             )
-
-
-params = {'dim': (96,96),
-          'batch_size':2,
-          'n_classes': 8,
-          'n_channels': 3,
-          'shuffle': True,
-          'normalize': True,
-          'downsampling':True,
-          'downsamplingPercent':80,
-          'dataAugmentation':True,
-            'rgbToGray':False,
-          'datagen':datagen
-            }
-
-obj=DataGenerator([('./drRafael2/img_0/c.jpg','./drRafael2/img_0/1.jpg','1'),
-                   ('./drRafael2/img_0/c.jpg','./drRafael2/img_0/3.jpg','3'),
-                   ('./drRafael2/img_0/c.jpg','./drRafael2/img_0/4.jpg','4'),
-                   ('./drRafael2/img_0/c.jpg','./drRafael2/img_0/6.jpg','6')],[0,1,2,3],**params)
-
-x,y=obj.__getitem__(1)
-
-transform =datagen.get_random_transform((96,96), seed=random.seed(5))
-transform['brightness']=0.999
-#transform['channel_shift_intensity']=5
-img=cv2.imread('./drRafael2/img_0/c.jpg')
-#img=img/255.0
-cv2.imshow('sdf',img)
-img2=datagen.apply_transform(img,transform)
-#img2=img2/255.0
-cv2.imshow('dfa',img2)
-
-cv2.waitKey()
-"""
