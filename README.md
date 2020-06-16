@@ -64,3 +64,10 @@ If you want to make a prediction, you can use some of your trained models or dow
 | Test image                  | Path to a test img                                                       | -t      | None       | None                                                                |
 | Model File                   | Path to your model file                                                        | -M      | None       | None                                                                |
 | Classification or Regression | Use this argument to distinguish  between classification and regression models | -c      | Regression | Type -c for classification, do not type the argument for regression |
+
+Remember that your test images also need to be preprocessed, but the dont have to be in the train split.  
+For example:  
+```sh
+$ python ./trainTest/demo.py -t ./data/test/class1/img2.jpg  -M 'path to model file' -c
+```
+
