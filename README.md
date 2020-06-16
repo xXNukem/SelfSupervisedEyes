@@ -3,13 +3,13 @@
 ### Description
 This works pretends to apply Self Supervised training to improve diabetic retinopathy level prediction.
 These are the Self Supervised works implemented:
-- Context Prediction:   
+- __Context Prediction__:   
 ![image](./exampleimgs/cpexampleprep.png)  
 The model will predict the position of a pair madre of a patch (1,2,3,4,5,6,7,8) and its center (C)
-- Jiggsaw:  
+- __Jiggsaw__:  
 ![image](./exampleimgs/puzzleexampleprep.png)  
 The model will permutate up to four patchs (1,2,3,4) and will predict wich permutation is applied. The algorithm get those permutations with the maximum Hamming distance.
-- Rotation:  
+- __Rotation__:  
 ![image](./exampleimgs/rotationexampleprer.jpeg)  
 Images will be rotated in [0,90,-90] degrees, so the model will predict the rotation angle. This work usually rotate images in [0,90,180,270] degrees but with eye images its not recomended because the model may confuse rigth eye and left eye.
 ### Usage
@@ -28,15 +28,15 @@ It is recommended to follow the next steps:
  - To predict diabetic retinopathy levels, you must categorize your images first, then you should apply oversampling and undersamplig following the options in the main menu.  
 Now you can train each Self-Supervised method, so you can launch those commands on the terminal:
 
- * Context Prediction:
+ * __Context Prediction__:
 ```sh
 $ python ./contextPrediction/contextPrediction.py 
 ```
- * Jiggsaw:
+ * __Jiggsaw__:
 ```sh
 $ python ./jiggsaw/jiggsaw.py
 ```
- * Rotation:
+ * __Rotation__:
 ```sh
 $ python ./rotation/rotation.py
 ```
@@ -57,7 +57,7 @@ $ python ./trainTest/getModelReport.py -V 'path to test split' -M 'path to model
 Also you can enter ``` --help ``` to see all the arguments that you can use.
 
 ### Demo  
-If you want to make a prediction, you can use some of your trained models or download one from "HERE" (insert URL). To do this, go to ./trainTest/demo.py and launch the script. You can use this parameters:
+If you want to make a prediction, you can use some of your trained models or download one from [here](https://1drv.ms/u/s!AlU_JdEj3rnUhfEpl0eY2Zy-1prdyQ?e=EswAvb). To do this, go to ./trainTest/demo.py and launch the script. You can use this parameters:
 
 | Paremeter                    | Description                                                                    | Command | Default    | Options                                                             |
 |------------------------------|--------------------------------------------------------------------------------|---------|------------|---------------------------------------------------------------------|
@@ -72,3 +72,8 @@ $ python ./trainTest/demo.py -t ./data/test/class1/img2.jpg  -M 'path to model f
 ```
 After the execution, you will see the image with the prediction printed in:  
 ![image](./exampleimgs/testexample.JPG)  
+
+### Credits
+- __Carlos de la Barrera Pérez__ - Lead Developer - [GitHub](https://github.com/xXNukem/)
+- __Dr. Manuel Jesús Marín Jiménez__ - Advisor - [GitHub](https://github.com/mjmarin)
+- __Dr. Rafel Giménez Gomez__ - Advisor
