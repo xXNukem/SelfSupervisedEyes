@@ -12,6 +12,25 @@ The model will permutate up to four patchs (1,2,3,4) and will predict wich permu
 - __Rotation__:  
 ![image](./exampleimgs/rotationexampleprer.jpeg)  
 Images will be rotated in [0,90,-90] degrees, so the model will predict the rotation angle. This work usually rotate images in [0,90,180,270] degrees but with eye images its not recomended because the model may confuse rigth eye and left eye.
+
+### Required software and libraries
+
+- Python 3.6
+- NVIDIA CUDA 10.0
+- NVIDIA cuDNN 7.4.1
+- Keras 2.3.1
+- TensorFlow-GPU 2.0
+- TensorBoard 2.0.2
+- OpenCV 4.2.0
+- Pandas 1.0.3
+- Scikit-Learn 0.23.0
+- Numpy 1.18.4
+- Pickle 1.4.0
+- Matplotlib 3.2.1
+- Click 7.1.2
+
+For compatibility reasons, you must use the exact Python, Keras, CUDA, cuDNN and TensorFlow versions listed, for the other libraries you can use the latest version if you want.
+
 ### Usage
 First, you have to prepare the data for training each Self-Supervised approach, so go to the terminal and launch:
 
