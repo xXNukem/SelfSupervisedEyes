@@ -3,7 +3,7 @@
 ### Description
 This works pretends to apply Self Supervised training to improve diabetic retinopathy level prediction.
 
-![image](C:\Users\cbp_1\Desktop\Universidad\TFG\cpexampleprep.png)
+![image](./exampleimgs/cpexampleprep.png)
 
 ### Usage
 First, you have to prepare the data for training each Self-Supervised approach, so go to the terminal and launch:
