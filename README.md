@@ -70,4 +70,5 @@ For example:
 ```sh
 $ python ./trainTest/demo.py -t ./data/test/class1/img2.jpg  -M 'path to model file' -c
 ```
-
+After the execution, you will see the image with the prediction printed in:  
+![image](./exampleimgs/testexample.jpg)  
