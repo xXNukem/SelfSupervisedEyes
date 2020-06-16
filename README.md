@@ -13,7 +13,7 @@ The model will permutate up to four patchs (1,2,3,4) and will predict wich permu
 ![image](./exampleimgs/rotationexampleprer.jpeg)  
 Images will be rotated in [0,90,-90] degrees, so the model will predict the rotation angle. This work usually rotate images in [0,90,180,270] degrees but with eye images its not recomended because the model may confuse rigth eye and left eye.
 
-### Required software and libraries
+# Required software and libraries
 
 - Python 3.6
 - NVIDIA CUDA 10.0
@@ -31,7 +31,7 @@ Images will be rotated in [0,90,-90] degrees, so the model will predict the rota
 
 For compatibility reasons, you must use the exact Python, Keras, CUDA, cuDNN and TensorFlow versions listed, for the other libraries you can use the latest version if you want.
 
-### Usage
+# Usage
 First, you have to prepare the data for training each Self-Supervised approach, so go to the terminal and launch:
 
 ```sh
@@ -75,7 +75,7 @@ $ python ./trainTest/getModelReport.py -V 'path to test split' -M 'path to model
 ```
 Also you can enter ``` --help ``` to see all the arguments that you can use.
 
-### Demo  
+# Demo  
 If you want to make a prediction, you can use some of your trained models or download one from [here](https://1drv.ms/u/s!AlU_JdEj3rnUhfEpl0eY2Zy-1prdyQ?e=EswAvb). To do this, go to ./trainTest/demo.py and launch the script. You can use this parameters:
 
 | Paremeter                    | Description                                                                    | Command | Default    | Options                                                             |
@@ -92,7 +92,7 @@ $ python ./trainTest/demo.py -t ./data/test/class1/img2.jpg  -M 'path to model f
 After the execution, you will see the image with the prediction printed in:  
 ![image](./exampleimgs/testexample.JPG)  
 
-### Credits
+# Credits
 - __Carlos de la Barrera Pérez__ - Lead Developer - [GitHub](https://github.com/xXNukem/)
 - __Dr. Manuel Jesús Marín Jiménez__ - Advisor - [GitHub](https://github.com/mjmarin)
 - __Dr. Rafel Giménez Gomez__ - Advisor
