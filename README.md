@@ -61,6 +61,6 @@ If you want to make a prediction, you can use some of your trained models or dow
 
 | Paremeter                    | Description                                                                    | Command | Default    | Options                                                             |
 |------------------------------|--------------------------------------------------------------------------------|---------|------------|---------------------------------------------------------------------|
-| Test Files                   | Path to your test images                                                       | -t      | None       | None                                                                |
+| Test image                  | Path to a test img                                                       | -t      | None       | None                                                                |
 | Model File                   | Path to your model file                                                        | -M      | None       | None                                                                |
 | Classification or Regression | Use this argument to distinguish  between classification and regression models | -c      | Regression | Type -c for classification, do not type the argument for regression |
