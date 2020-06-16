@@ -56,7 +56,7 @@ $ python ./trainTest/getModelReport.py -V 'path to test split' -M 'path to model
 ```
 Also you can enter ``` --help ``` to see all the arguments that you can use.
 
-###Demo
+### Demo  
 If you want to make a prediction, you can use some of your trained models or download one from "HERE" (insert URL). To do this, go to ./trainTest/demo.py and launch the script. You can use this parameters:
 
 | Paremeter                    | Description                                                                    | Command | Default    | Options                                                             |
