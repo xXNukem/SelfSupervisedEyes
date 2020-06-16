@@ -11,19 +11,20 @@ It is recommended to follow the next steps:
  - Preprocess the entire set of images
  - Resize the entire set of images
  - Prepare the data for each Self-Supervised training:
- --For Context Prediction and Jiggsaw you will need to make aditional train/validation splits, those files will be saved automatically in ContextPrediction folder and Jiggsaw Folder and will be read automatically when you launch those trainings.
---This step is not required for the Rotation method.
+     - For Context Prediction and Jiggsaw you will need to make aditional train/validation splits, those files will be saved automatically in ContextPrediction folder and Jiggsaw Folder and will be read automatically when you launch those trainings.
+     - This step is not required for the Rotation method.
 
 Now you can train each Self-Supervised method, so you can launch those commands on the terminal:
--Context Prediction:
+
+ * Context Prediction:
 ```sh
 $ python ./contextPrediction/contextPrediction.py 
 ```
--Jiggsaw:
+ * Jiggsaw:
 ```sh
 $ python ./jiggsaw/jiggsaw.py
 ```
--Rotation:
+ * Rotation:
 ```sh
 $ python ./rotation/rotation.py
 ```
