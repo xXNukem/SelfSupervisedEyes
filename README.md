@@ -3,14 +3,14 @@
 ### Description
 This works pretends to apply Self Supervised training to improve diabetic retinopathy level prediction.
 These are the Self Supervised works implemented:
-- Context Prediction:
+- Context Prediction:   
 ![image](./exampleimgs/cpexampleprep.png)
 The model will predict the position of a pair madre of a patch (1,2,3,4,5,6,7,8) and its center (C)
-- Jiggsaw:
+- Jiggsaw:  
 ![image](./exampleimgs/puzzleexampleprep.png)
 The model will permutate up to four patchs (1,2,3,4) and will predict wich permutation is applied. The algorithm get those permutations with the maximum Hamming distance.
-- Rotation:
-![image](./exampleimgs/rotationeexampleprer.png)
+- Rotation:  
+![image](./exampleimgs/rotationexampleprer.png)
 Images will be rotated in [0,90,-90] degrees, so the model will predict the rotation angle. This work usually rotate images in [0,90,180,270] degrees but with eye images its not recomended because the model may confuse rigth eye and left eye.
 ### Usage
 First, you have to prepare the data for training each Self-Supervised approach, so go to the terminal and launch:
