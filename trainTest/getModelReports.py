@@ -9,7 +9,7 @@ import tensorflow as tf
 @click.option('--validation_files', '-V', default=None, required=True, help=u'Validation directory.')
 @click.option('--model_files', '-M', default=None, required=True, help=u'Model file.')
 @click.option('--classification', '-c', is_flag=True,
-              help=u' -c for a classification model, nothing for a regression mothe.')
+              help=u' -c for a classification model, nothing for a regression model.')
 
 #get model metrics
 def testModel(validation_files,classification,model_files):
