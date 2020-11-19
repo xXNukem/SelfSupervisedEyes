@@ -29,7 +29,7 @@ Images will be rotated in [0,90,-90] degrees, so the model will predict the rota
 - Matplotlib 3.2.1
 - Click 7.1.2
 
-For compatibility reasons, you must use the exact Python, Keras, CUDA, cuDNN and TensorFlow versions listed, for the other libraries you can use the latest version if you want.
+For compatibility, you must use the exact Python, Keras, CUDA, cuDNN and TensorFlow versions listed, for the other libraries you can use the latest version if you want.
 
 # Usage
 First, you have to prepare the data for training each Self-Supervised approach, so go to the terminal and launch:
